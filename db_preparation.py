@@ -65,6 +65,8 @@ CREATE TABLE IF NOT EXISTS Trošak (
 );
 """
 
+#cursor.execute(f"GRANT EXECUTE ON PROCEDURE {os.getenv('DB_DATABASE')}.datetime TO '{os.getenv('DB_USER')}'@'%';")
+#cursor.execute("FLUSH PRIVILEGES;")
 cursor.execute("SET character_set_server = 'utf8';")
 cursor.execute("SET collation_server = 'utf8mb3_croatian_ci';")
 cursor.execute(promet)
