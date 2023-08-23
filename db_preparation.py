@@ -1,12 +1,15 @@
 import mariadb
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # connection parameters
 conn_params = {
-    "user" : "user",
-    "password" : "password",
-    "host" : "192.168.90.95",
-    "port" : 3306,
-    "database" : "mydatabase"
+    "user" : os.getenv('DB_USER'),
+    "password" : os.getenv('DB_PASSWORD'),
+    "host" : os.getenv('DB_HOST'),
+    "port" : int(os.getenv('DB_PORT')),
+    "database" : os.getenv('DB_DATABASE')
 }
 
 # Establish a connection

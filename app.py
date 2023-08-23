@@ -3,7 +3,9 @@ import mariadb
 import datetime
 import os
 import pandas as pd
+from dotenv import load_dotenv
 
+load_dotenv()
 
 cell_hover = {  # for row hover use <tr> instead of <td>
     'selector': 'td:hover',
@@ -25,22 +27,22 @@ if not os.path.exists(secrets_path):
     with open(f"{secrets_path}/secrets.toml", "w") as file:
         file.write("[connections.mariadb]\n")
         file.write('dialect = "mariadb"\n')
-        file.write('host = "192.168.90.95"\n')
-        file.write('port = 3306\n')
-        file.write('database="mydatabase"\n')
-        file.write('username="root"\n')
-        file.write('password="password"')
+        file.write(f'host = "192.168.90.95"') #{os.getenv("DB_HOST")}\n')
+        file.write(f'port = {os.getenv("DB_PORT")}\n')
+        file.write(f'database={os.getenv("DB_DATABASE")}\n')
+        file.write(f'username={os.getenv("DB_USER")}\n')
+        file.write(f'password={os.getenv("DB_PASSWORD")}')
         file.close()
 
 
 
 # connection parameters
 conn_params = {
-    "user" : "user",
-    "password" : "password",
-    "host" : "192.168.90.95",
-    "port" : 3306,
-    "database" : "mydatabase"
+    "user" : os.getenv('DB_USER'),
+    "password" : os.getenv('DB_PASSWORD'),
+    "host" : "192.168.90.95" ,#os.getenv('DB_HOST'),
+    "port" : int(os.getenv('DB_PORT')),
+    "database" : os.getenv('DB_DATABASE')
 }
 
 # Establish a connection
@@ -67,7 +69,7 @@ tabela = st.dataframe(data=df, use_container_width=True)
 imena_kolona_query = f"""
 SELECT COLUMN_NAME
 FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_SCHEMA = 'mydatabase'
+WHERE TABLE_SCHEMA = '{os.getenv("DB_DATABASE")}'
     AND TABLE_NAME = '{odabir_tabele}';
 """
 imena_kolona = connection.query(imena_kolona_query).values
