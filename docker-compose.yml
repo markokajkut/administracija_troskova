@@ -13,8 +13,9 @@ services:
       - data:/var/lib/mysql
     ports:
       - "3316:${DB_PORT}"
-    command: bash -c "python3 db_preparation.py"
+
   app:
     image: markokajkut/administracija_troskova:latest
     ports:
       - "8501:8501"
+#    command: bash -c "python db_preparation.py"

@@ -12,6 +12,9 @@ conn_params = {
     "database" : os.getenv('DB_DATABASE')
 }
 
+db_user = os.getenv('DB_USER')
+db_pass = os.getenv('DB_PASSWORD')
+
 # Establish a connection
 connection = mariadb.connect(**conn_params)
 cursor = connection.cursor()
@@ -65,7 +68,7 @@ CREATE TABLE IF NOT EXISTS Trošak (
 );
 """
 
-#cursor.execute(f"GRANT EXECUTE ON PROCEDURE {os.getenv('DB_DATABASE')}.datetime TO '{os.getenv('DB_USER')}'@'%';")
+cursor.execute(f"GRANT ALL PRIVILEGES ON *.* TO '{db_user}'@'%' IDENTIFIED BY '{db_pass}' WITH GRANT OPTION;")
 #cursor.execute("FLUSH PRIVILEGES;")
 cursor.execute("SET character_set_server = 'utf8';")
 cursor.execute("SET collation_server = 'utf8mb3_croatian_ci';")
