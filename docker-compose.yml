@@ -13,9 +13,11 @@ services:
       - data:/var/lib/mysql
     ports:
       - "3316:${DB_PORT}"
+    network_mode: "host"
 
-  app:
-    image: markokajkut/administracija_troskova:latest
-    ports:
-      - "8501:8501"
+
+#  app:
+#    image: markokajkut/administracija_troskova:latest
+#    ports:
+#      - "8501:8501"
 #    command: bash -c "python db_preparation.py"

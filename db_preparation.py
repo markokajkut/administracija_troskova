@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS Trošak (
 );
 """
 
-cursor.execute(f"GRANT ALL PRIVILEGES ON *.* TO '{db_user}'@'%' IDENTIFIED BY '{db_pass}' WITH GRANT OPTION;")
+#cursor.execute(f"GRANT ALL PRIVILEGES ON *.* TO '{db_user}'@'%' IDENTIFIED BY '{db_pass}' WITH GRANT OPTION;")
 #cursor.execute("FLUSH PRIVILEGES;")
 cursor.execute("SET character_set_server = 'utf8';")
 cursor.execute("SET collation_server = 'utf8mb3_croatian_ci';")
