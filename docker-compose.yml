@@ -1,9 +1,11 @@
 version: '3'
 volumes:
   data:
+  #my.cnf:
 services:
   db:
     image: mariadb
+    container_name: db
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -11,13 +13,43 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - data:/var/lib/mysql
+      #- my.cnf:/etc/mysql/conf.d/my.cnf
     ports:
-      - "3316:${DB_PORT}"
-    network_mode: "host"
+      - "3306:${DB_PORT}"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    # networks:
+    #   - mynet
+    #command: ["python", "db_preparation.py"]
+    #network_mode: "host"
 
 
-#  app:
-#    image: markokajkut/administracija_troskova:latest
-#    ports:
-#      - "8501:8501"
-#    command: bash -c "python db_preparation.py"
+#   app:
+#     #image: markokajkut/administracija_troskova:latest
+#     image: streamlit/sl:1
+#     container_name: app
+#     build:
+#       context: .
+#     ports:
+#       - "8501:8501"
+#     depends_on:
+#       db:
+#         condition: service_healthy
+#     healthcheck:
+#       test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
+#       interval: 10s
+#       timeout: 10s
+#       retries: 5
+#       start_period: 20s
+    
+#     #command: ["./entrypoint.sh"]
+#     # networks:
+#     #   - mynet
+
+# # networks:
+# #   mynet:
+# #     driver: bridge

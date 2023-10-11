@@ -1,13 +1,18 @@
 import mariadb
 import os
+import subprocess
 from dotenv import load_dotenv
 load_dotenv()
+
+#find_db_ip_command = ["docker", "inspect", "-f", "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}", "db"]
+#db_ip_output = subprocess.check_output(find_db_ip_command, universal_newlines=True).strip()
 
 # connection parameters
 conn_params = {
     "user" : os.getenv('DB_USER'),
     "password" : os.getenv('DB_PASSWORD'),
     "host" : os.getenv('DB_HOST'),
+    #"host": db_ip_output,
     "port" : int(os.getenv('DB_PORT')),
     "database" : os.getenv('DB_DATABASE')
 }
@@ -22,23 +27,29 @@ cursor = connection.cursor()
 promet = """
 CREATE TABLE IF NOT EXISTS Promet (
     Datum DATE,
+    `Naziv(ime) klijenta` VARCHAR(255),
     Kilometraža FLOAT,
-    Relacija VARCHAR(255),
-    Napomena VARCHAR(255),
+    `Startno mjesto` VARCHAR(255),
+    `Ciljno mjesto` VARCHAR(255),
     Lokacija ENUM('BiH', 'Inostranstvo'),
-    `Iznos gotovina` FLOAT,
-    `Iznos žiralno` FLOAT,
-    Plaćeno ENUM('DA', 'NE')
+    `Iznos gotovina (KM)` FLOAT,
+    `Iznos žiralno (KM)` FLOAT,
+    Plaćeno ENUM('DA', 'NE', 'GRATIS'),
+    `Operativni trošak (KM)` FLOAT,
+    `Neto zarada (KM)` FLOAT,
+    `Komentar/Napomena` VARCHAR(255)
 );
 """
 
 gorivo = """
 CREATE TABLE IF NOT EXISTS Gorivo (
     Datum DATE,
-    Kilometraža FLOAT,
-    `Utrošak goriva (L)` FLOAT,
-    Cijena FLOAT,
-    Iznos FLOAT
+    `Nasuta količina (l)` FLOAT,
+    `Cijena goriva (KM)` FLOAT,
+    `Iznos (KM)` FLOAT,
+    `Način plaćanja` ENUM('Gotovina', 'Žiralno', 'Kartica'),
+    `Benzinska pumpa` VARCHAR(255),
+    `Komentar/Napomena` VARCHAR(255)
 );
 """
 
@@ -46,9 +57,9 @@ servis = """
 CREATE TABLE IF NOT EXISTS Servis (
     Datum DATE,
     Kilometraža FLOAT,
-    Servis VARCHAR(255),
-    Napomena VARCHAR(255),
-    Iznos FLOAT
+    `Iznos (KM)` FLOAT,
+    `Način plaćanja` ENUM('Gotovina', 'Žiralno', 'Kartica'),
+    `Komentar/Napomena` VARCHAR(255)
 );
 """
 
@@ -56,15 +67,20 @@ kazne = """
 CREATE TABLE IF NOT EXISTS Kazne (
     Datum DATE,
     Prekršaj VARCHAR(255),
-    Iznos FLOAT
+    Iznos FLOAT,
+    `Komentar/Napomena` VARCHAR(255)
 );
 """
 
 trosak = """
 CREATE TABLE IF NOT EXISTS Trošak (
     Datum DATE,
-    Opis ENUM('Svakodnevni trošak', 'Terminal', 'Autoput', 'Mostarina'),
-    Iznos FLOAT
+    Opis ENUM('Operativni trošak', 'Terminal', 'Putarina', 'Mostarina', 'Gorivo',
+              'Osiguranje', 'Telefon', 'Privatno', 'Pranje vozila', 'Ostalo', 'Registracija', 'Saobraćajne kazne',
+              'Servis', 'Gume'),
+    `Iznos (KM)` FLOAT,
+    `Način plaćanja` ENUM('Gotovina', 'Žiralno', 'Kartica'),
+    `Komentar/Napomena` VARCHAR(255)
 );
 """
 
