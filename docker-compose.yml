@@ -13,7 +13,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - data:/var/lib/mysql
-      #- my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./provision:/docker-entrypoint-initdb.d
     ports:
       - "3306:${DB_PORT}"
     healthcheck:

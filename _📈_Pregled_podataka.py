@@ -96,7 +96,7 @@ WHERE TABLE_SCHEMA = '{os.getenv("DB_DATABASE")}'
 """
 imena_kolona = connection.query(imena_kolona_query).values
 lista_kolona = [imena_kolona[i][0] for i in range(len(imena_kolona))]
-print(lista_kolona)
+#print(lista_kolona)
 
 all_queries=[]
 with sidebar:
