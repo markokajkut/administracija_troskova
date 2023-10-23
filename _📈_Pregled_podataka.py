@@ -72,6 +72,8 @@ cursor = connection_1.cursor()
 #danas = danas.strftime("%d.%m.%Y")
 
 st.title('Administracija finansija')
+st.write("---")
+
 sidebar = st.sidebar
 with sidebar:
 

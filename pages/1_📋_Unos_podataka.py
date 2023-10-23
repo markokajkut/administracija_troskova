@@ -4,9 +4,11 @@ import os
 import pandas as pd
 import datetime
 import mariadb
+import sqlalchemy
 from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.getcwd()))
 from unos_u_bazu import unos_u_bazu
+from mitosheet.streamlit.v1 import spreadsheet
 
 load_dotenv()
 
@@ -113,10 +115,9 @@ benz_pumpa = st.column_config.TextColumn(
             default=""
 )
 
-
 @st.cache_resource
-def init_connection():
-    
+def mariadb_connection():
+
     # connection parameters
     conn_params = {
         "user" : os.getenv('DB_USER'),
@@ -128,12 +129,28 @@ def init_connection():
     }
 
     # Establish a connection
-    connection_1 = mariadb.connect(**conn_params)
-    connection = st.experimental_connection('mariadb', type='sql')
-    return connection, connection_1
+    connection = mariadb.connect(**conn_params)
+    return connection
 
-connection, connection_1 = init_connection()
-cursor = connection_1.cursor()
+@st.cache_resource
+def experimental_connection():
+
+    # Establish a connection
+    connection = st.experimental_connection('mariadb', type='sql')
+    return connection
+
+@st.cache_resource
+def sqlalchemy_connection():
+
+    # sqlalchemy engine and connection
+    engine = sqlalchemy.create_engine(
+    f"mariadb+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_UNOS')}"
+    )
+    connection = engine.raw_connection()
+    return connection
+
+connection = sqlalchemy_connection()
+cursor = connection.cursor()
 
 st.title('Administracija finansija')
 st.write("---")
@@ -181,9 +198,7 @@ st.write("---")
 #     st.session_state.edited_df_usluga_pro_bono = st.session_state.df_usluga_pro_bono.copy()
 # else:
 #     st.session_state.edited_df_usluga_pro_bono = pd.read_sql('SELECT * FROM Unos.Usluga_PRO_BONO', connection_1)
-
-if 'df_usluga' not in st.session_state:
-    st.session_state.df_usluga = pd.DataFrame(
+df_usluga_init = st.session_state.df_usluga = pd.DataFrame(
             [
                 {
                 "Datum": datetime.date.today(), 
@@ -201,12 +216,15 @@ if 'df_usluga' not in st.session_state:
                 "Komentar/Napomena": ""}
             ]
         )
+if 'df_usluga' not in st.session_state:
+    st.session_state.df_usluga = df_usluga_init
     st.session_state.edited_df_usluga = st.session_state.df_usluga.copy()
-else:
-    st.session_state.edited_df_usluga = pd.read_sql('SELECT * FROM Unos.Usluga', connection_1)
+# else:
+#     st.session_state.df_usluga = pd.read_sql('SELECT * FROM Unos.Usluga', connection)
+#     st.session_state.edited_df_usluga = pd.read_sql('SELECT * FROM Unos.Usluga', connection)
 
-if 'df_gorivo' not in st.session_state:
-    st.session_state.df_gorivo = pd.DataFrame(
+
+df_gorivo_init = pd.DataFrame(
             [
                 {
                 "Datum": datetime.date.today(), 
@@ -219,12 +237,15 @@ if 'df_gorivo' not in st.session_state:
                 "Komentar/Napomena": ""}
             ]
         )
+if 'df_gorivo' not in st.session_state:
+    st.session_state.df_gorivo = df_gorivo_init
     st.session_state.edited_df_gorivo = st.session_state.df_gorivo.copy()
-else:
-    st.session_state.edited_df_gorivo = pd.read_sql('SELECT * FROM Unos.Gorivo', connection_1)
+# else:
+#     #st.session_state.df_gorivo = pd.read_sql('SELECT * FROM Unos.Gorivo', connection)
+#     st.session_state.edited_df_gorivo = pd.read_sql('SELECT * FROM Unos.Gorivo', connection)
 
-if 'df_troskovi_odrzavanja' not in st.session_state:
-    st.session_state.df_troskovi_odrzavanja = pd.DataFrame(
+
+df_troskovi_odrzavanja_init = pd.DataFrame(
             [
                 {
                 "Datum": datetime.date.today(), 
@@ -236,12 +257,14 @@ if 'df_troskovi_odrzavanja' not in st.session_state:
                 "Komentar/Napomena": ""}
             ]
         )
+if 'df_troskovi_odrzavanja' not in st.session_state:
+    st.session_state.df_troskovi_odrzavanja = df_troskovi_odrzavanja_init
     st.session_state.edited_df_troskovi_odrzavanja = st.session_state.df_troskovi_odrzavanja.copy()
-else:
-    st.session_state.edited_df_troskovi_odrzavanja = pd.read_sql('SELECT * FROM Unos.Troskovi_odrzavanja', connection_1)
+# else:
+#     #st.session_state.df_troskovi_odrzavanja = pd.read_sql('SELECT * FROM Unos.Troskovi_odrzavanja', connection)
+#     st.session_state.edited_df_troskovi_odrzavanja = pd.read_sql('SELECT * FROM Unos.Troskovi_odrzavanja', connection)
 
-if 'df_terenski_troskovi' not in st.session_state:
-    st.session_state.df_terenski_troskovi = pd.DataFrame(
+df_terenski_troskovi_init = pd.DataFrame(
             [
                 {
                 "Datum": datetime.date.today(), 
@@ -252,9 +275,12 @@ if 'df_terenski_troskovi' not in st.session_state:
                 "Komentar/Napomena": ""}
             ]
         )
+if 'df_terenski_troskovi' not in st.session_state:
+    st.session_state.df_terenski_troskovi = df_terenski_troskovi_init
     st.session_state.edited_df_terenski_troskovi = st.session_state.df_terenski_troskovi.copy()
-else:
-    st.session_state.edited_df_terenski_troskovi = pd.read_sql('SELECT * FROM Unos.Terenski_troskovi', connection_1)
+# else:
+#     #st.session_state.df_terenski_troskovi = pd.read_sql('SELECT * FROM Unos.Terenski_troskovi', connection)
+#     st.session_state.edited_df_terenski_troskovi = pd.read_sql('SELECT * FROM Unos.Terenski_troskovi', connection)
 
 def save_edits():
     st.session_state.df_usluga = st.session_state.edited_df_usluga.copy()
@@ -266,6 +292,11 @@ df_usluga = st.session_state.df_usluga
 df_gorivo = st.session_state.df_gorivo
 df_troskovi_odrzavanja = st.session_state.df_troskovi_odrzavanja
 df_terenski_troskovi = st.session_state.df_terenski_troskovi
+
+def call_mitosheet(vrsta_troska):
+
+    if vrsta_troska == "Usluga":
+        st.session_state.edited_df_usluga = spreadsheet(df_usluga)
 
 
 #@st.cache_data
@@ -419,15 +450,18 @@ vrsta_troska = st.selectbox("Odaberite vrstu troška",
                                     "Troškovi održavanja (servis, registracija, gume)",
                                     "Terenski troškovi (osiguranje, saobraćajne kazne...)"],
                             on_change=save_edits)
-with st.container():
+#with st.container():
 
-    st.write("Unesite podatke u tabelu")
-    df = call_data_editor(vrsta_troska)
+st.write("Unesite podatke u tabelu")
+
+dfs, _ = spreadsheet(df_usluga,df_gorivo,df_troskovi_odrzavanja,df_terenski_troskovi)
+df = list(dfs)[0]
+    #df = call_data_editor(vrsta_troska)
     #print(df)
-    submitted = st.button("Potvrda", help="Potvrdite unos podataka u bazu")
+    #submitted = st.button("Potvrda", help="Potvrdite unos podataka u bazu")
     #brojac = 0
-    if submitted:
-        unos_u_bazu(vrsta_troska, cursor, connection_1, df)
+    # if submitted:
+    #     unos_u_bazu(vrsta_troska, cursor, connection, df)
         #brojac += 1
 
 
