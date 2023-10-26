@@ -63,7 +63,7 @@ def administracija_sqlalchemy():
 
     # sqlalchemy engine and connection
     engine = create_engine(
-    f"mariadb+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_DATABASE')}",
+    f"mariadb+mariadbconnector://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_DATABASE')}",
     poolclass=QueuePool, pool_size=5, max_overflow=10)
     connection = engine.raw_connection()
     return engine, connection
@@ -82,14 +82,15 @@ def check_df_len():
     #unos_engine = unos_sqlalchemy()[0]
     # unos_connection_1 = unos_sqlalchemy()[1]
     # unos_cursor_1 = unos_connection_1.cursor()
-    with unos_engine.connect() as connection:
-        len_df_usluga = connection.execute(text("SELECT COUNT(*) AS row_count FROM Usluga;"))
-        #len_df_gorivo = len(pd.read_sql('SELECT * FROM Unos.Gorivo', unos_connection))
-        len_df_gorivo = connection.execute(text("SELECT COUNT(*) AS row_count FROM Gorivo;"))
-        #len_df_troskovi_odrzavanja = len(pd.read_sql('SELECT * FROM Unos.Troskovi_odrzavanja', unos_connection))
-        len_df_troskovi_odrzavanja = connection.execute(text("SELECT COUNT(*) AS row_count FROM Troskovi_odrzavanja;"))
-        #len_df_terenski_troskovi = len(pd.read_sql('SELECT * FROM Unos.Terenski_troskovi', unos_connection))
-        len_df_terenski_troskovi = connection.execute(text("SELECT COUNT(*) AS row_count FROM Terenski_troskovi;"))
+    with unos_engine.connect() as unos_connection:
+        len_df_usluga = len(pd.read_sql('SELECT * FROM Usluga', unos_connection))
+        #len_df_usluga = len(pd.DataFrame(connection.execute(text("SELECT COUNT(*) AS row_count FROM Usluga;"))))
+        len_df_gorivo = len(pd.read_sql('SELECT * FROM Gorivo', unos_connection))
+        #len_df_gorivo = len(pd.DataFrame(connection.execute(text("SELECT COUNT(*) AS row_count FROM Gorivo;"))))
+        len_df_troskovi_odrzavanja = len(pd.read_sql('SELECT * FROM Troskovi_odrzavanja', unos_connection))
+        #len_df_troskovi_odrzavanja = len(pd.DataFrame(connection.execute(text("SELECT COUNT(*) AS row_count FROM Troskovi_odrzavanja;"))))
+        len_df_terenski_troskovi = len(pd.read_sql('SELECT * FROM Terenski_troskovi', unos_connection))
+        #len_df_terenski_troskovi = len(pd.DataFrame(connection.execute(text("SELECT COUNT(*) AS row_count FROM Terenski_troskovi;"))))
         #unos_connection_1.commit()
         #unos_cursor_1.close()
         #unos_connection_1.close()

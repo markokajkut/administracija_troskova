@@ -1,7 +1,7 @@
-import sqlalchemy
 import pymysql
 import os
 import pandas as pd
+from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,20 +24,32 @@ def unos_u_bazu(vrsta_troska, unos_engine, administracija_connection, df):
                                     Plaćeno,
                                     `Operativni trošak (KM)`,
                                     `Neto zarada (KM)`)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                            VALUES (:datum, 
+                                    :naziv_klijenta, 
+                                    :kilometraza, 
+                                    :startno_mjesto, 
+                                    :ciljno_mjesto, 
+                                    :komentar, 
+                                    :lokacija, 
+                                    :iznos_gotovina, 
+                                    :iznos_ziralno, 
+                                    :placeno, 
+                                    :op_trosak, 
+                                    :neto_zarada);
                         """
-                administracija_connection.execute(query, (row["Datum"], 
-                                                      row["Naziv(ime) klijenta"], 
-                                                      row["Kilometraža"], 
-                                                      row["Startno mjesto"], 
-                                                      row["Ciljno mjesto"], 
-                                                      row["Komentar/Napomena"],
-                                                      row["Lokacija"], 
-                                                      row["Iznos"], 
-                                                      float(0), 
-                                                      row["Naplaćeno?"],
-                                                      row["Operativni trošak"],
-                                                      row["Neto zarada"]))
+                row_tuple = ({"datum": row["Datum"], 
+                              "naziv_klijenta": row["Naziv(ime) klijenta"], 
+                              "kilometraza": row["Kilometraža"], 
+                              "startno_mjesto": row["Startno mjesto"], 
+                              "ciljno_mjesto": row["Ciljno mjesto"], 
+                              "komentar": row["Komentar/Napomena"],
+                              "lokacija": row["Lokacija"], 
+                              "iznos_gotovina": row["Iznos"], 
+                              "iznos_ziralno": float(0), 
+                              "placeno": row["Naplaćeno?"],
+                              "op_trosak": row["Operativni trošak"],
+                              "neto_zarada": row["Neto zarada"]})
+                administracija_connection.execute(text(query), **row_tuple)
            
             if row["Trošak(opis)"] == "Usluga naplativa" and row["Način plaćanja"] == "Žiralno":
                 query = """
@@ -53,20 +65,32 @@ def unos_u_bazu(vrsta_troska, unos_engine, administracija_connection, df):
                                     Plaćeno,
                                     `Operativni trošak (KM)`,
                                     `Neto zarada (KM)`)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                            VALUES (:datum, 
+                                    :naziv_klijenta, 
+                                    :kilometraza, 
+                                    :startno_mjesto, 
+                                    :ciljno_mjesto, 
+                                    :komentar,
+                                    :lokacija, 
+                                    :iznos_gotovina, 
+                                    :iznos_ziralno, 
+                                    :placeno, 
+                                    :op_trosak, 
+                                    :neto_zarada);
                         """
-                administracija_connection.execute(query, (row["Datum"],
-                                                      row["Naziv(ime) klijenta"], 
-                                                      row["Kilometraža"], 
-                                                      row["Startno mjesto"], 
-                                                      row["Ciljno mjesto"], 
-                                                      row["Komentar/Napomena"],
-                                                      row["Lokacija"], 
-                                                      float(0), 
-                                                      row["Iznos"], 
-                                                      row["Naplaćeno?"],
-                                                      row["Operativni trošak"],
-                                                      row["Neto zarada"]))
+                row_tuple = ({"datum": row["Datum"],
+                              "naziv_klijenta": row["Naziv(ime) klijenta"], 
+                              "kilometraza": row["Kilometraža"], 
+                              "startno_mjesto": row["Startno mjesto"], 
+                              "ciljno_mjesto": row["Ciljno mjesto"], 
+                              "komentar": row["Komentar/Napomena"],
+                              "lokacija": row["Lokacija"], 
+                              "iznos_gotovina": float(0), 
+                              "iznos_ziralno": row["Iznos"], 
+                              "placeno": row["Naplaćeno?"],
+                              "op_trosak": row["Operativni trošak"],
+                              "neto_zarada": row["Neto zarada"]})
+                administracija_connection.execute(text(query), **row_tuple)
                           
 
             if row["Trošak(opis)"] == "Usluga pro-bono":
@@ -83,20 +107,32 @@ def unos_u_bazu(vrsta_troska, unos_engine, administracija_connection, df):
                                     `Operativni trošak (KM)`, 
                                     `Neto zarada (KM)`, 
                                     `Komentar/Napomena`)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                            VALUES (:datum, 
+                                    :naziv_klijenta, 
+                                    :kilometraza, 
+                                    :startno_mjesto, 
+                                    :ciljno_mjesto, 
+                                    :lokacija, 
+                                    :iznos_gotovina, 
+                                    :iznos_ziralno, 
+                                    :placeno, 
+                                    :op_trosak, 
+                                    :neto_zarada,
+                                    :komentar);
                         """
-                administracija_connection.execute(query, (row["Datum"],
-                                                      row["Naziv(ime) klijenta"],
-                                                      row["Kilometraža"],
-                                                      row["Startno mjesto"],
-                                                      row["Ciljno mjesto"],
-                                                      row["Lokacija"],
-                                                      float(0),
-                                                      float(0),
-                                                      row["Naplaćeno?"],
-                                                      row["Operativni trošak"],
-                                                      row["Neto zarada"],
-                                                      row["Komentar/Napomena"]))
+                row_tuple = ({"datum": row["Datum"],
+                              "naziv_klijenta": row["Naziv(ime) klijenta"],
+                              "kilometraza": row["Kilometraža"],
+                              "startno_mjesto": row["Startno mjesto"],
+                              "ciljno_mjesto": row["Ciljno mjesto"],
+                              "lokacija": row["Lokacija"],
+                              "iznos_gotovina": float(0),
+                              "iznos_ziralno": float(0),
+                              "placeno": row["Naplaćeno?"],
+                              "op_trosak": row["Operativni trošak"],
+                              "neto_zarada": row["Neto zarada"],
+                              "komentar": row["Komentar/Napomena"]})
+                administracija_connection.execute(text(query), **row_tuple)
                     
         df.to_sql(con=unos_engine, name="Usluga", schema="Unos", if_exists="replace", index=False)
 
@@ -112,13 +148,14 @@ def unos_u_bazu(vrsta_troska, unos_engine, administracija_connection, df):
                                 `Komentar/Napomena`)
             VALUES (%s, %s, %s, %s, %s, %s, %s);
                     """
-            administracija_connection.execute(query, (row["Datum"],
-                                                  row["Nasuta količina"], 
-                                                  row["Cijena goriva"], 
-                                                  row["Iznos"],
-                                                  row["Način plaćanja"], 
-                                                  row["Naziv benzinske pumpe"], 
-                                                  row["Komentar/Napomena"]))
+            row_tuple = (row["Datum"],
+                         row["Nasuta količina"], 
+                         row["Cijena goriva"], 
+                         row["Iznos"],
+                         row["Način plaćanja"], 
+                         row["Naziv benzinske pumpe"], 
+                         row["Komentar/Napomena"])
+            administracija_connection.execute(text(query), (row_tuple,))
 
         df.to_sql(con=unos_engine, name="Gorivo", schema="Unos", if_exists="replace", index=False)
 
@@ -134,12 +171,13 @@ def unos_u_bazu(vrsta_troska, unos_engine, administracija_connection, df):
                                     `Komentar/Napomena`)
                 VALUES (%s, %s, %s, %s, %s, %s);
                         """
-                administracija_connection.execute(query, (row["Datum"],
-                                                      row["Dodatni opis (opciono)"],
-                                                      row["Kilometraža"],
-                                                      row["Iznos"],
-                                                      row["Način plaćanja"],
-                                                      row["Komentar/Napomena"]))
+                row_tuple = (row["Datum"],
+                             row["Dodatni opis (opciono)"],
+                             row["Kilometraža"],
+                             row["Iznos"],
+                             row["Način plaćanja"],
+                             row["Komentar/Napomena"])
+                administracija_connection.execute(text(query), (row_tuple,))
                     
             else:
                 query = """
@@ -151,12 +189,13 @@ def unos_u_bazu(vrsta_troska, unos_engine, administracija_connection, df):
                                     `Komentar/Napomena`)
                 VALUES (%s, %s, %s, %s, %s, %s);
                         """
-                administracija_connection.execute(query, (row["Datum"],
-                                                      row["Trošak(opis)"],
-                                                      row["Dodatni opis (opciono)"],
-                                                      row["Iznos"],
-                                                      row["Način plaćanja"],
-                                                      row["Komentar/Napomena"]))
+                row_tuple = (row["Datum"],
+                             row["Trošak(opis)"],
+                             row["Dodatni opis (opciono)"],
+                             row["Iznos"],
+                             row["Način plaćanja"],
+                             row["Komentar/Napomena"])
+                administracija_connection.execute(text(query), (row_tuple,))
                 
 
         df.to_sql(con=unos_engine, name="Troskovi_odrzavanja", schema="Unos", if_exists="replace", index=False)
@@ -171,10 +210,11 @@ def unos_u_bazu(vrsta_troska, unos_engine, administracija_connection, df):
                                    `Komentar/Napomena`)
                 VALUES (%s, %s, %s, %s);
                         """
-                administracija_connection.execute(query, (row["Datum"],
-                                                      row["Dodatni opis (opciono)"],
-                                                      row["Iznos"],
-                                                      row["Komentar/Napomena"]))
+                row_tuple = (row["Datum"],
+                             row["Dodatni opis (opciono)"],
+                             row["Iznos"],
+                             row["Komentar/Napomena"])
+                administracija_connection.execute(text(query), (row_tuple,))
             else:
                 query = """
                 INSERT INTO Trošak (Datum,
@@ -185,13 +225,14 @@ def unos_u_bazu(vrsta_troska, unos_engine, administracija_connection, df):
                                     `Komentar/Napomena`)
                 VALUES (%s, %s, %s, %s, %s, %s);
                         """
-                administracija_connection.execute(query, (row["Datum"],
-                                                      row["Trošak(opis)"],
-                                                      row["Dodatni opis (opciono)"],
-                                                      row["Iznos"],
-                                                      row["Način plaćanja"],
-                                                      row["Komentar/Napomena"]))
+                row_tuple = (row["Datum"],
+                             row["Trošak(opis)"],
+                             row["Dodatni opis (opciono)"],
+                             row["Iznos"],
+                             row["Način plaćanja"],
+                             row["Komentar/Napomena"])
+                administracija_connection.execute(text(query), (row_tuple,))
                 
         df.to_sql(con=unos_engine, name="Terenski_troskovi", schema="Unos", if_exists="replace", index=False)
                             
-    administracija_connection.commit()
+    #administracija_connection.commit()
