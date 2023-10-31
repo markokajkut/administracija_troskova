@@ -1,6 +1,10 @@
 import streamlit as st
 import sys
 import os
+sys.path.append("C:\\Users\\PC\\Desktop\\Sinisa Borjanic")###
+
+#sys.path.append(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))###
+#print(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))
 import pandas as pd
 import datetime
 import mariadb
@@ -9,10 +13,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy.pool import QueuePool
 from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.getcwd()))
-from unos_u_bazu import unos_u_bazu
+from unos_u_bazu import unos_u_bazu_administracija, unos_u_bazu_unos
 from mitosheet.streamlit.v1 import spreadsheet
 from app_skelet_unos import call_data_editor
-
+#sys.path.append("C:\Users\PC\Desktop\Sinisa Borjanic")###
 load_dotenv()
 
 st.set_page_config(
@@ -79,30 +83,34 @@ administracija_engine = administracija_sqlalchemy()[0]
 
 def check_df_len():
 
-    #unos_engine = unos_sqlalchemy()[0]
-    # unos_connection_1 = unos_sqlalchemy()[1]
-    # unos_cursor_1 = unos_connection_1.cursor()
     with unos_engine.connect() as unos_connection:
         len_df_usluga = len(pd.read_sql('SELECT * FROM Usluga', unos_connection))
-        #len_df_usluga = len(pd.DataFrame(connection.execute(text("SELECT COUNT(*) AS row_count FROM Usluga;"))))
         len_df_gorivo = len(pd.read_sql('SELECT * FROM Gorivo', unos_connection))
-        #len_df_gorivo = len(pd.DataFrame(connection.execute(text("SELECT COUNT(*) AS row_count FROM Gorivo;"))))
         len_df_troskovi_odrzavanja = len(pd.read_sql('SELECT * FROM Troskovi_odrzavanja', unos_connection))
-        #len_df_troskovi_odrzavanja = len(pd.DataFrame(connection.execute(text("SELECT COUNT(*) AS row_count FROM Troskovi_odrzavanja;"))))
         len_df_terenski_troskovi = len(pd.read_sql('SELECT * FROM Terenski_troskovi', unos_connection))
-        #len_df_terenski_troskovi = len(pd.DataFrame(connection.execute(text("SELECT COUNT(*) AS row_count FROM Terenski_troskovi;"))))
-        #unos_connection_1.commit()
-        #unos_cursor_1.close()
-        #unos_connection_1.close()
+       
         return len_df_usluga, len_df_gorivo, len_df_troskovi_odrzavanja, len_df_terenski_troskovi
 
 len_df_usluga, len_df_gorivo, len_df_troskovi_odrzavanja, len_df_terenski_troskovi = check_df_len()
-st.write(len_df_usluga, len_df_gorivo, len_df_troskovi_odrzavanja, len_df_terenski_troskovi)
-
+#st.write(len_df_usluga, len_df_gorivo, len_df_troskovi_odrzavanja, len_df_terenski_troskovi)
+print(len_df_usluga, len_df_gorivo, len_df_troskovi_odrzavanja, len_df_terenski_troskovi)
 st.title('Administracija finansija')
 st.subheader("Unos podataka")
 st.write("---")
-#with unos_sqlalchemy()[1] as unos_connection:
+
+if 'df_usluga' not in st.session_state:
+    st.session_state.df_usluga = None
+    st.session_state.edited_df_usluga = None
+if 'df_gorivo' not in st.session_state:
+    st.session_state.df_gorivo = None
+    st.session_state.edited_df_gorivo = None
+if 'df_troskovi_odrzavanja' not in st.session_state:
+    st.session_state.df_troskovi_odrzavanja = None
+    st.session_state.edited_df_troskovi_odrzavanja = None
+if 'df_terenski_troskovi' not in st.session_state:
+    st.session_state.df_terenski_troskovi = None
+    st.session_state.edited_df_terenski_troskovi = None
+
 with unos_engine.connect() as unos_connection:
     df_usluga_init = None
     if len_df_usluga == 0:
@@ -125,10 +133,11 @@ with unos_engine.connect() as unos_connection:
                 ]
             )
     else:
+        print("ovdje sam")
         df_usluga_init = pd.read_sql('SELECT * FROM Usluga', unos_connection)
-    if 'df_usluga' not in st.session_state:
-        st.session_state.df_usluga = df_usluga_init
-        st.session_state.edited_df_usluga = st.session_state.df_usluga.copy()
+    #if 'df_usluga' not in st.session_state:
+    st.session_state.df_usluga = df_usluga_init
+    st.session_state.edited_df_usluga = st.session_state.df_usluga.copy()
 
     df_gorivo_init = None
     if len_df_gorivo == 0:
@@ -147,9 +156,9 @@ with unos_engine.connect() as unos_connection:
             )
     else:
         df_gorivo_init = pd.read_sql('SELECT * FROM Gorivo', unos_connection)
-    if 'df_gorivo' not in st.session_state:
-        st.session_state.df_gorivo = df_gorivo_init
-        st.session_state.edited_df_gorivo = st.session_state.df_gorivo.copy()
+    #if 'df_gorivo' not in st.session_state:
+    st.session_state.df_gorivo = df_gorivo_init
+    st.session_state.edited_df_gorivo = st.session_state.df_gorivo.copy()
 
     df_troskovi_odrzavanja_init = None
     if len_df_troskovi_odrzavanja == 0:
@@ -167,9 +176,9 @@ with unos_engine.connect() as unos_connection:
             )
     else:
         df_troskovi_odrzavanja_init = pd.read_sql('SELECT * FROM Troskovi_odrzavanja', unos_connection)
-    if 'df_troskovi_odrzavanja' not in st.session_state:
-        st.session_state.df_troskovi_odrzavanja = df_troskovi_odrzavanja_init
-        st.session_state.edited_df_troskovi_odrzavanja = st.session_state.df_troskovi_odrzavanja.copy()
+    #if 'df_troskovi_odrzavanja' not in st.session_state:
+    st.session_state.df_troskovi_odrzavanja = df_troskovi_odrzavanja_init
+    st.session_state.edited_df_troskovi_odrzavanja = st.session_state.df_troskovi_odrzavanja.copy()
 
     df_terenski_troskovi_init = None
     if len_df_terenski_troskovi == 0:
@@ -186,9 +195,9 @@ with unos_engine.connect() as unos_connection:
             )
     else:
         df_terenski_troskovi_init = pd.read_sql('SELECT * FROM Terenski_troskovi', unos_connection)
-    if 'df_terenski_troskovi' not in st.session_state:
-        st.session_state.df_terenski_troskovi = df_terenski_troskovi_init
-        st.session_state.edited_df_terenski_troskovi = st.session_state.df_terenski_troskovi.copy()
+    #if 'df_terenski_troskovi' not in st.session_state:
+    st.session_state.df_terenski_troskovi = df_terenski_troskovi_init
+    st.session_state.edited_df_terenski_troskovi = st.session_state.df_terenski_troskovi.copy()
 
 def save_edits():
     st.session_state.df_usluga = st.session_state.edited_df_usluga.copy()
@@ -216,8 +225,12 @@ with st.container():
     df = call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja, df_terenski_troskovi)
     submitted = st.button("Potvrda", help="Potvrdite unos podataka u bazu")
     if submitted:
-        with administracija_engine.connect() as administracija_connection:
-            unos_u_bazu(vrsta_troska, unos_engine, administracija_connection, df)
+        #try:
+        unos_u_bazu_administracija(vrsta_troska, administracija_engine, df)
+        unos_u_bazu_unos(unos_engine, df, vrsta_troska)
+        # except:
+        #     st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli.', icon="🚨")
+        
         #st.experimental_rerun()
 
 # administracija_cursor.close()

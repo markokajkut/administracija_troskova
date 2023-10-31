@@ -4,6 +4,7 @@ SET character_set_server = 'utf8';
 SET collation_server = 'utf8mb3_croatian_ci';
 
 CREATE TABLE IF NOT EXISTS Promet (
+    `Redni broj` INT,
     Datum DATE,
     `Naziv(ime) klijenta` VARCHAR(255),
     Kilometraža FLOAT,
@@ -15,36 +16,44 @@ CREATE TABLE IF NOT EXISTS Promet (
     Plaćeno ENUM('DA', 'NE', 'GRATIS'),
     `Operativni trošak (KM)` FLOAT,
     `Neto zarada (KM)` FLOAT,
-    `Komentar/Napomena` VARCHAR(255)
+    `Komentar/Napomena` VARCHAR(255),
+    PRIMARY KEY (`Redni broj`)
 );
 
 CREATE TABLE IF NOT EXISTS Gorivo (
+    `Redni broj` INT,
     Datum DATE,
     `Nasuta količina (l)` FLOAT,
     `Cijena goriva (KM)` FLOAT,
     `Iznos (KM)` FLOAT,
     `Način plaćanja` ENUM('Gotovina', 'Žiralno', 'Kartica'),
     `Benzinska pumpa` VARCHAR(255),
-    `Komentar/Napomena` VARCHAR(255)
+    `Komentar/Napomena` VARCHAR(255),
+    PRIMARY KEY (`Redni broj`)
 );
 
 CREATE TABLE IF NOT EXISTS Servis (
+    `Redni broj` INT,
     Datum DATE,
     Opis VARCHAR(255),
     Kilometraža FLOAT,
     `Iznos (KM)` FLOAT,
     `Način plaćanja` ENUM('Gotovina', 'Žiralno', 'Kartica'),
-    `Komentar/Napomena` VARCHAR(255)
+    `Komentar/Napomena` VARCHAR(255),
+    PRIMARY KEY (`Redni broj`)
 );
 
 CREATE TABLE IF NOT EXISTS Kazne (
+    `Redni broj` INT,
     Datum DATE,
     Prekršaj VARCHAR(255),
     Iznos FLOAT,
-    `Komentar/Napomena` VARCHAR(255)
+    `Komentar/Napomena` VARCHAR(255),
+    PRIMARY KEY (`Redni broj`)
 );
 
 CREATE TABLE IF NOT EXISTS Trošak (
+    `Redni broj` INT,
     Datum DATE,
     Opis ENUM('Operativni trošak', 'Terminal', 'Putarina', 'Mostarina', 'Gorivo',
               'Osiguranje', 'Telefon', 'Privatno', 'Pranje vozila', 'Ostalo', 'Registracija', 'Saobraćajne kazne',
@@ -52,7 +61,8 @@ CREATE TABLE IF NOT EXISTS Trošak (
     `Dodatni opis (opciono)` VARCHAR(255),
     `Iznos (KM)` FLOAT,
     `Način plaćanja` ENUM('Gotovina', 'Žiralno', 'Kartica'),
-    `Komentar/Napomena` VARCHAR(255)
+    `Komentar/Napomena` VARCHAR(255),
+    PRIMARY KEY (`Redni broj`)
 );
 
 USE Unos;

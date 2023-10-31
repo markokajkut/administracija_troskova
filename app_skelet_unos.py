@@ -99,7 +99,6 @@ def call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja,
     
     ############### USLUGA DOMACA ILI USLUGA INOSTRANSTVO ###############
     if vrsta_troska == "Usluga":
-        #df = df_usluga
         st.session_state.edited_df_usluga = st.data_editor(
         df_usluga,
         column_config={
