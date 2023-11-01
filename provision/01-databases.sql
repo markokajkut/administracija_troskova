@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS Kazne (
     `Redni broj` INT,
     Datum DATE,
     Prekršaj VARCHAR(255),
-    Iznos FLOAT,
+    `Iznos (KM)` FLOAT,
     `Komentar/Napomena` VARCHAR(255),
     PRIMARY KEY (`Redni broj`)
 );
