@@ -61,8 +61,7 @@ CREATE TABLE IF NOT EXISTS Trošak (
     `Dodatni opis (opciono)` VARCHAR(255),
     `Iznos (KM)` FLOAT,
     `Način plaćanja` ENUM('Gotovina', 'Žiralno', 'Kartica'),
-    `Komentar/Napomena` VARCHAR(255),
-    PRIMARY KEY (`Redni broj`)
+    `Komentar/Napomena` VARCHAR(255)
 );
 
 USE Unos;

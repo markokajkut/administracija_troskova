@@ -226,7 +226,7 @@ with st.container():
     submitted = st.button("Potvrda", help="Potvrdite unos podataka u bazu")
     if submitted:
         #try:
-        unos_u_bazu_administracija(vrsta_troska, administracija_engine, df)
+        unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_troskovi_odrzavanja, df_terenski_troskovi)
         unos_u_bazu_unos(unos_engine, df, vrsta_troska)
         # except:
         #     st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli.', icon="🚨")

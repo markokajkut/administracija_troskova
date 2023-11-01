@@ -1,6 +1,6 @@
 from sqlalchemy import text
 
-def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df):
+def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_troskovi_odrzavanja, df_terenski_troskovi):
     with administracija_engine.connect() as administracija_connection:
         #administracija_connection.execute(text("TRUNCATE TABLE Promet;"))
         # administracija_connection.execute(text("TRUNCATE TABLE Gorivo;"))
@@ -226,6 +226,39 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df):
             
 
         if vrsta_troska == "Troškovi održavanja (servis, registracija, gume)":
+            administracija_connection.execute(text("TRUNCATE TABLE Trošak;"))
+
+
+            for index, row in df_terenski_troskovi.iterrows():
+                if row["Trošak(opis)"] != "Saobraćajne kazne":
+                    query = """
+                    INSERT INTO Trošak (`Redni broj`,
+                                        Datum,
+                                        Opis,
+                                        `Dodatni opis (opciono)`,
+                                        `Iznos (KM)`,
+                                        `Način plaćanja`,
+                                        `Komentar/Napomena`)
+                                VALUES (:redni_broj,
+                                        :datum,
+                                        :opis,
+                                        :dodatni_opis,
+                                        :iznos,
+                                        :nacin_placanja,
+                                        :komentar);
+                            """
+                    row_dict = {"redni_broj": index+1,
+                                "datum": row["Datum"],
+                                "opis": row["Trošak(opis)"],
+                                "dodatni_opis": row["Dodatni opis (opciono)"],
+                                "iznos": row["Iznos"],
+                                "nacin_placanja": row["Način plaćanja"],
+                                "komentar": row["Komentar/Napomena"]}
+                    if df_terenski_troskovi.loc[0, "Iznos"] != float(0):
+                        administracija_connection.execute(text(query), parameters=row_dict)
+                    else:
+                        pass
+
             for index, row in df.iterrows():
                 if row["Trošak(opis)"] == "Servis":
                     query = """
@@ -275,15 +308,40 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df):
                                         :dodatni_opis,
                                         :iznos,
                                         :nacin_placanja,
-                                        :komentar)
-                                ON DUPLICATE KEY UPDATE
-                                        Datum = VALUES(Datum),
-                                        Opis = VALUES(Opis),
-                                        `Dodatni opis (opciono)` = VALUES(`Dodatni opis (opciono)`),
-                                        `Iznos (KM)` = VALUES(`Iznos (KM)`),
-                                        `Način plaćanja` = VALUES(`Način plaćanja`),
-                                        `Komentar/Napomena` = VALUES(`Komentar/Napomena`);
+                                        :komentar);
                             """
+                            #     ON DUPLICATE KEY UPDATE
+                            #             Datum = CASE
+                            #                 WHEN `Redni broj` = :redni_broj
+                            #                 AND Opis = :opis 
+                            #                 THEN :datum
+                            #                 ELSE Datum END, 
+                            #             Opis = CASE
+                            #                 WHEN `Redni broj` = :redni_broj
+                            #                 AND Opis = :opis 
+                            #                 THEN :opis
+                            #                 ELSE Opis END,
+                            #             `Dodatni opis (opciono)` = CASE
+                            #                 WHEN `Redni broj` = :redni_broj
+                            #                 AND Opis = :opis 
+                            #                 THEN :dodatni_opis
+                            #                 ELSE `Dodatni opis (opciono)` END,
+                            #             `Iznos (KM)` = CASE
+                            #                 WHEN `Redni broj` = :redni_broj
+                            #                 AND Opis = :opis 
+                            #                 THEN :iznos
+                            #                 ELSE `Iznos (KM)` END,
+                            #             `Način plaćanja` = CASE
+                            #                 WHEN `Redni broj` = :redni_broj
+                            #                 AND Opis = :opis 
+                            #                 THEN :nacin_placanja
+                            #                 ELSE `Način plaćanja` END,
+                            #             `Komentar/Napomena` = CASE
+                            #                 WHEN `Redni broj` = :redni_broj
+                            #                 AND Opis = :opis 
+                            #                 THEN :komentar
+                            #                 ELSE `Komentar/Napomena` END;
+                            # """
                     row_dict = {"redni_broj": index+1,
                                 "datum": row["Datum"],
                                 "opis": row["Trošak(opis)"],
@@ -297,6 +355,40 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df):
             
 
         if vrsta_troska == "Terenski troškovi (osiguranje, saobraćajne kazne...)":
+
+            administracija_connection.execute(text("TRUNCATE TABLE Trošak;"))
+
+            for index, row in df_troskovi_odrzavanja.iterrows():
+                if row["Trošak(opis)"] != "Servis":
+                    query = """
+                    INSERT INTO Trošak (`Redni broj`,
+                                        Datum,
+                                        Opis,
+                                        `Dodatni opis (opciono)`,
+                                        `Iznos (KM)`,
+                                        `Način plaćanja`,
+                                        `Komentar/Napomena`)
+                                VALUES (:redni_broj,
+                                        :datum,
+                                        :opis,
+                                        :dodatni_opis,
+                                        :iznos,
+                                        :nacin_placanja,
+                                        :komentar);
+                            """
+                    row_dict = {"redni_broj": index+1,
+                                "datum": row["Datum"],
+                                "opis": row["Trošak(opis)"],
+                                "dodatni_opis": row["Dodatni opis (opciono)"],
+                                "iznos": row["Iznos"],
+                                "nacin_placanja": row["Način plaćanja"],
+                                "komentar": row["Komentar/Napomena"]}
+                    if df_troskovi_odrzavanja.loc[0, "Iznos"] != float(0):
+                        administracija_connection.execute(text(query), parameters=row_dict)
+                    else:
+                        pass
+
+
             for index, row in df.iterrows():
                 if row["Trošak(opis)"] == "Saobraćajne kazne":
                     query = """
@@ -337,15 +429,40 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df):
                                         :dodatni_opis,
                                         :iznos,
                                         :nacin_placanja,
-                                        :komentar)
-                                ON DUPLICATE KEY UPDATE
-                                        Datum = VALUES(Datum),
-                                        Opis = VALUES(Opis),
-                                        `Dodatni opis (opciono)` = VALUES(`Dodatni opis (opciono)`),
-                                        `Iznos (KM)` = VALUES(`Iznos (KM)`),
-                                        `Način plaćanja` = VALUES(`Način plaćanja`),
-                                        `Komentar/Napomena` = VALUES(`Komentar/Napomena`);
+                                        :komentar);
                             """
+                            #     ON DUPLICATE KEY UPDATE
+                            #             Datum = CASE
+                            #                 WHEN `Redni broj` = :redni_broj
+                            #                 AND Opis = :opis 
+                            #                 THEN :datum
+                            #                 ELSE Datum END, 
+                            #             Opis = CASE
+                            #                 WHEN `Redni broj` = :redni_broj
+                            #                 AND Opis = :opis 
+                            #                 THEN :opis
+                            #                 ELSE Opis END,
+                            #             `Dodatni opis (opciono)` = CASE
+                            #                 WHEN `Redni broj` = :redni_broj
+                            #                 AND Opis = :opis 
+                            #                 THEN :dodatni_opis
+                            #                 ELSE `Dodatni opis (opciono)` END,
+                            #             `Iznos (KM)` = CASE
+                            #                 WHEN `Redni broj` = :redni_broj
+                            #                 AND Opis = :opis 
+                            #                 THEN :iznos
+                            #                 ELSE `Iznos (KM)` END,
+                            #             `Način plaćanja` = CASE
+                            #                 WHEN `Redni broj` = :redni_broj
+                            #                 AND Opis = :opis 
+                            #                 THEN :nacin_placanja
+                            #                 ELSE `Način plaćanja` END,
+                            #             `Komentar/Napomena` = CASE
+                            #                 WHEN `Redni broj` = :redni_broj
+                            #                 AND Opis = :opis 
+                            #                 THEN :komentar
+                            #                 ELSE `Komentar/Napomena` END;
+                            # """
                     row_dict = {"redni_broj": index+1,
                                 "datum": row["Datum"],
                                 "opis": row["Trošak(opis)"],
