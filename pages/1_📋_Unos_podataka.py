@@ -93,7 +93,7 @@ def check_df_len():
 
 len_df_usluga, len_df_gorivo, len_df_troskovi_odrzavanja, len_df_terenski_troskovi = check_df_len()
 #st.write(len_df_usluga, len_df_gorivo, len_df_troskovi_odrzavanja, len_df_terenski_troskovi)
-print(len_df_usluga, len_df_gorivo, len_df_troskovi_odrzavanja, len_df_terenski_troskovi)
+#print(len_df_usluga, len_df_gorivo, len_df_troskovi_odrzavanja, len_df_terenski_troskovi)
 st.title('Administracija finansija')
 st.subheader("Unos podataka")
 st.write("---")
@@ -133,7 +133,6 @@ with unos_engine.connect() as unos_connection:
                 ]
             )
     else:
-        print("ovdje sam")
         df_usluga_init = pd.read_sql('SELECT * FROM Usluga', unos_connection)
     #if 'df_usluga' not in st.session_state:
     st.session_state.df_usluga = df_usluga_init

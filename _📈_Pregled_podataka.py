@@ -4,10 +4,13 @@ import datetime
 import os
 import pandas as pd
 import subprocess
+import streamlit_nested_layout
+import streamlit_authenticator as stauth
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import QueuePool
 from dotenv import load_dotenv
+from report import generate_report
 
 load_dotenv()
 
@@ -806,17 +809,30 @@ st.subheader(f"{odabir_tabele}")
 #print(df)
 tabela = st.dataframe(data=df.drop(columns=["Redni broj"]), use_container_width=True, hide_index=False)
 
-imena_kolona_query = f"""
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_SCHEMA = '{os.getenv("DB_DATABASE")}'
-    AND TABLE_NAME = '{odabir_tabele}';
-"""
+columns = st.columns([5, 5])
+
+with st.columns([1, 1])[1]:
+    with st.columns([1, 1])[1]:
+        with st.columns([1, 1])[1]:
+            
+            with st.form("izvjestaj", clear_on_submit=True):
+                st.write("Generiši izvještaj")
+                donja_datum = st.date_input("Od", format="DD.MM.YYYY")
+                gornja_datum = st.date_input("Do", format="DD.MM.YYYY")
+                if st.form_submit_button("Potvrda"):
+                    generate_report(donja_datum, gornja_datum, administracija_engine)
+
+# imena_kolona_query = f"""
+# SELECT COLUMN_NAME
+# FROM INFORMATION_SCHEMA.COLUMNS
+# WHERE TABLE_SCHEMA = '{os.getenv("DB_DATABASE")}'
+#     AND TABLE_NAME = '{odabir_tabele}';
+# """
 # imena_kolona = connection.query(imena_kolona_query).values
 # lista_kolona = [imena_kolona[i][0] for i in range(len(imena_kolona))]
 #print(lista_kolona)
 
-all_queries=[]
+#all_queries=[]
 # with sidebar:
 
 #     with st.container():

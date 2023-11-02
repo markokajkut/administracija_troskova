@@ -395,7 +395,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                     INSERT INTO Kazne (`Redni broj`,
                                        Datum,
                                        Prekršaj,
-                                       Iznos,
+                                       `Iznos (KM)`,
                                        `Komentar/Napomena`)
                                 VALUES (:redni_broj,
                                         :datum,
@@ -405,7 +405,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                             ON DUPLICATE KEY UPDATE
                                         Datum = VALUES(Datum),
                                         Prekršaj = VALUES(Prekršaj),
-                                        Iznos = VALUES(Iznos),
+                                        `Iznos (KM)` = VALUES(`Iznos (KM)`),
                                        `Komentar/Napomena` = VALUES(`Komentar/Napomena`);
                             """
                     row_dict = {"redni_broj": index+1,
