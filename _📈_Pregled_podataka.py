@@ -712,18 +712,40 @@ if odabir_tabele == "Trošak":
         rest_of_query = rest_of_query + " " + query_part_datum
 
         # OPIS
-        konacan_opis = ""
+        opis_konacno = ""
         if 'opis_trosak' not in st.session_state:
-            st.session_state.opis_trosak = konacan_opis
-        query_part_opis = ""
+            st.session_state.opis_trosak = opis_konacno
+        query_part_opis_trosak = ""
         with st.form("_opis_trosak", clear_on_submit=False):
-            opis = st.text_input("Opis", "")
+            opis = st.selectbox(label="Opis trošak", options=("Putarina",
+                                                              "Terminal",
+                                                              "Mostarina",
+                                                              "Osiguranje",
+                                                              "Saobraćajne kazne",
+                                                              "Telefon",
+                                                              "Privatno",
+                                                              "Pranje vozila",
+                                                              "Ostalo"))
             if st.form_submit_button("Potvrda"):
-                konacan_opis = opis
-                st.session_state.opis_trosak = konacan_opis
+                opis_konacno = opis
+                st.session_state.opis_trosak = opis_konacno
         if st.session_state.opis_trosak != "":
-            query_part_opis = f'AND Opis = "{st.session_state.opis_trosak}"'
-        rest_of_query = rest_of_query + " " + query_part_opis
+            query_part_opis_trosak = f'AND Opis = "{st.session_state.opis_trosak}"'
+        rest_of_query = rest_of_query + " " + query_part_opis_trosak
+
+
+        # konacan_opis = ""
+        # if 'opis_trosak' not in st.session_state:
+        #     st.session_state.opis_trosak = konacan_opis
+        # query_part_opis = ""
+        # with st.form("_opis_trosak", clear_on_submit=False):
+        #     opis = st.text_input("Opis", "")
+        #     if st.form_submit_button("Potvrda"):
+        #         konacan_opis = opis
+        #         st.session_state.opis_trosak = konacan_opis
+        # if st.session_state.opis_trosak != "":
+        #     query_part_opis = f'AND Opis = "{st.session_state.opis_trosak}"'
+        # rest_of_query = rest_of_query + " " + query_part_opis
 
         # DODATNI OPIS
         konacan_dodatni_opis = ""
@@ -731,7 +753,7 @@ if odabir_tabele == "Trošak":
             st.session_state.dodatni_opis_trosak = konacan_dodatni_opis
         query_part_dodatni_opis = ""
         with st.form("_dodatni_opis_trosak", clear_on_submit=False):
-            dodatni_opis = st.text_input("Opis", "")
+            dodatni_opis = st.text_input("Dodatni opis", "")
             if st.form_submit_button("Potvrda"):
                 konacan_dodatni_opis = dodatni_opis
                 st.session_state.dodatni_opis_trosak = konacan_dodatni_opis

@@ -1,4 +1,5 @@
 from sqlalchemy import text
+import streamlit as st
 
 def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_troskovi_odrzavanja, df_terenski_troskovi):
     with administracija_engine.connect() as administracija_connection:
@@ -9,7 +10,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
         # administracija_connection.execute(text("TRUNCATE TABLE Trošak;"))
         # administracija_connection.commit()
         if vrsta_troska == "Usluga":
-            #administracija_connection.execute(text("TRUNCATE TABLE Promet;"))
+            administracija_connection.execute(text("TRUNCATE TABLE Promet;"))
             for index, row in df.iterrows():
                 if row["Način plaćanja"] == "Gotovina":
                     query = """
@@ -66,7 +67,10 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                 "placeno": row["Naplaćeno?"],
                                 "op_trosak": row["Operativni trošak"],
                                 "neto_zarada": row["Neto zarada"]}
-                    administracija_connection.execute(text(query), parameters=row_dict)
+                    try:
+                        administracija_connection.execute(text(query), parameters=row_dict)
+                    except:
+                        st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli.', icon="🚨")
             
                 if row["Način plaćanja"] == "Žiralno":
                     query = """
@@ -123,7 +127,10 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                 "placeno": row["Naplaćeno?"],
                                 "op_trosak": row["Operativni trošak"],
                                 "neto_zarada": row["Neto zarada"]}
-                    administracija_connection.execute(text(query), parameters=row_dict)
+                    try:
+                        administracija_connection.execute(text(query), parameters=row_dict)
+                    except:
+                        st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli.', icon="🚨")
                             
 
                 if row["Način plaćanja"] == "Gratis":
@@ -181,11 +188,15 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                 "placeno": row["Naplaćeno?"],
                                 "op_trosak": row["Operativni trošak"],
                                 "neto_zarada": row["Neto zarada"]}
-                    administracija_connection.execute(text(query), parameters=row_dict)
+                    try:
+                        administracija_connection.execute(text(query), parameters=row_dict)
+                    except:
+                        st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli.', icon="🚨")
                         
     
 
         if vrsta_troska == "Gorivo":
+            administracija_connection.execute(text("TRUNCATE TABLE Gorivo;"))
             for index, row in df.iterrows():
                 query = """
                 INSERT INTO Gorivo (`Redni broj`,
@@ -221,13 +232,16 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                             "nacin_placanja": row["Način plaćanja"], 
                             "naziv_pumpe": row["Naziv benzinske pumpe"], 
                             "komentar": row["Komentar/Napomena"]}
-                administracija_connection.execute(text(query), parameters=row_dict)
+                try:
+                        administracija_connection.execute(text(query), parameters=row_dict)
+                except:
+                        st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli.', icon="🚨")
 
             
 
         if vrsta_troska == "Troškovi održavanja (servis, registracija, gume)":
             administracija_connection.execute(text("TRUNCATE TABLE Trošak;"))
-
+            administracija_connection.execute(text("TRUNCATE TABLE Servis;"))
 
             for index, row in df_terenski_troskovi.iterrows():
                 if row["Trošak(opis)"] != "Saobraćajne kazne":
@@ -291,7 +305,10 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                 "iznos": row["Iznos"],
                                 "nacin_placanja": row["Način plaćanja"],
                                 "komentar": row["Komentar/Napomena"]}
-                    administracija_connection.execute(text(query), parameters=row_dict)
+                    try:
+                        administracija_connection.execute(text(query), parameters=row_dict)
+                    except:
+                        st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli.', icon="🚨")
                         
                 else:
                     query = """
@@ -357,6 +374,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
         if vrsta_troska == "Terenski troškovi (osiguranje, saobraćajne kazne...)":
 
             administracija_connection.execute(text("TRUNCATE TABLE Trošak;"))
+            administracija_connection.execute(text("TRUNCATE TABLE Kazne;"))
 
             for index, row in df_troskovi_odrzavanja.iterrows():
                 if row["Trošak(opis)"] != "Servis":
@@ -413,7 +431,10 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                 "dodatni_opis": row["Dodatni opis (opciono)"],
                                 "iznos": row["Iznos"],
                                 "komentar": row["Komentar/Napomena"]}
-                    administracija_connection.execute(text(query), parameters=row_dict)
+                    try:
+                        administracija_connection.execute(text(query), parameters=row_dict)
+                    except:
+                        st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli.', icon="🚨")
                 else:
                     query = """
                     INSERT INTO Trošak (`Redni broj`,
@@ -470,7 +491,10 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                 "iznos": row["Iznos"],
                                 "nacin_placanja": row["Način plaćanja"],
                                 "komentar": row["Komentar/Napomena"]}
-                    administracija_connection.execute(text(query), parameters=row_dict)
+                    try:
+                        administracija_connection.execute(text(query), parameters=row_dict)
+                    except:
+                        st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli.', icon="🚨")
                     
         administracija_connection.commit()
                     

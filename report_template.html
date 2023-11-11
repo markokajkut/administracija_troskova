@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Izvještaj</title>
+</head>
+<body>
+    <h1>Izvještaj</h1>
+    <p>Datum: {{ current_date }}</p>
+    <p>Za period: {{ pocetni_datum }} - {{ krajnji_datum }}</p>
+
+    <h2>PROMET</h2>
+    <p>Promet gotovinski: {{ promet_gotovina }} KM</p>
+    <p>Promet žiralno: {{ promet_ziralno }} KM</p>
+    <p>Ukupno promet: {{ ukupno_promet }} KM</p>
+    <p>Od toga nenaplaćeno: {{ nenaplaceno }} KM</p>
+    <p>Broj gratis/pro-bono usluga: {{ broj_gratis }}</p>
+
+    {% if broj_gratis > 0 %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Datum</th>
+                <th>Naziv(ime) klijenta</th>
+                <th>Kilometraža</th>
+                <th>Startno mjesto</th>
+                <th>Ciljno mjesto</th>
+                <th>Operativni trošak</th>
+                <th>Komentar/Napomena</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in gratis_rows %}
+            <tr>
+                <td>{{ row['Datum'] }}</td>
+                <td>{{ row['Naziv(ime) klijenta'] }}</td>
+                <td>{{ row['Kilometraža'] }} km</td>
+                <td>{{ row['Startno mjesto'] }}</td>
+                <td>{{ row['Ciljno mjesto'] }}</td>
+                <td>{{ row['Operativni trošak (KM)']}} KM</td>
+                <td>{{ row['Komentar/Napomena'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <!-- GORIVO Section -->
+    <h2>GORIVO</h2>
+    <p>Pređena kilometraža za odabrani period: {{ gorivo_predjena_kilometraza }} km</p>
+    <p>Po prosječnoj cijeni: {{ gorivo_prosjecna_cijena }} KM/l</p>
+    <p>Nasuta količina: {{ gorivo_nasuta_kolicina }} l</p>
+    <p>Ukupno plaćeno: {{ gorivo_ukupno_placeno }} KM</p>
+
+    <!-- KAZNE Section -->
+    <h2>KAZNE</h2>
+    <p>Broj napravljenih prekršaja: {{ kazne_broj_prekrsaja }}</p>
+    <p>Ukupan trošak: {{ kazne_ukupan_trosak }} KM</p>
+
+    <!-- SERVIS Section -->
+    <h2>SERVIS</h2>
+    <p>Broj napravljenih servisa: {{ servis_broj_servisa }}</p>
+
+    <!-- TROSKOVI Section -->
+    <h2>TROŠKOVI</h2>
+    <p>Iznos troškova za odabrani period: {{ trosak_ukupan_iznos }} KM</p>
+    <!-- Add other sections for KILOMETRAZA, GORIVO, KAZNE, SERVIS, and TROSKOVI as needed -->
+</body>
+</html>

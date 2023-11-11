@@ -14,7 +14,7 @@ from sqlalchemy.pool import QueuePool
 from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.getcwd()))
 from unos_u_bazu import unos_u_bazu_administracija, unos_u_bazu_unos
-from mitosheet.streamlit.v1 import spreadsheet
+#from mitosheet.streamlit.v1 import spreadsheet
 from app_skelet_unos import call_data_editor
 #sys.path.append("C:\Users\PC\Desktop\Sinisa Borjanic")###
 load_dotenv()
