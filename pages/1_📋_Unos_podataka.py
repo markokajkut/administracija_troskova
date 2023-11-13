@@ -145,6 +145,7 @@ with unos_engine.connect() as unos_connection:
                     {
                     "Datum": datetime.date.today(), 
                     "Trošak(opis)": "Gorivo",
+                    "Kilometraža": float(0),
                     "Nasuta količina": float(0), 
                     "Cijena goriva": float(0), 
                     "Iznos": float(0), 
@@ -166,7 +167,7 @@ with unos_engine.connect() as unos_connection:
                     {
                     "Datum": datetime.date.today(), 
                     "Trošak(opis)": "Servis",
-                    "Dodatni opis (opciono)": "",
+                    #"Dodatni opis (opciono)": "",
                     "Kilometraža": float(0),
                     "Iznos": float(0),
                     "Način plaćanja": "Gotovina", 
@@ -227,8 +228,9 @@ with st.container():
         #try:
         unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_troskovi_odrzavanja, df_terenski_troskovi)
         unos_u_bazu_unos(unos_engine, df, vrsta_troska)
-        # except:
-        #     st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli.', icon="🚨")
+        #except:
+        #    st.error('U tabeli ne smije stajati vrijednost None.', icon="🚨")
+            #st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli. U tabeli ne smije stajati vrijednost None.', icon="🚨")
         
         #st.experimental_rerun()
 

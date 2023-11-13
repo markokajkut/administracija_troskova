@@ -8,6 +8,13 @@ datum = st.column_config.DateColumn(
             required=True
         )
 
+gorivo_kilometraza = st.column_config.NumberColumn(
+            help="Kilometraža na satu",
+            default=float(0),
+            min_value=float(0),
+            format="%.2f km"
+        )
+
 gorivo_litara = st.column_config.NumberColumn(
             help="Utrošak goriva za turu",
             default=float(0),
@@ -139,7 +146,8 @@ def call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja,
         df_gorivo,
         column_config={
             "Datum": datum,
-            "Trošak(opis)": st.column_config.TextColumn(help="Vrsta troška", default=vrsta_troska, disabled=True), 
+            "Trošak(opis)": st.column_config.TextColumn(help="Vrsta troška", default=vrsta_troska, disabled=True),
+            "Kilometraža": gorivo_kilometraza, 
             "Nasuta količina": gorivo_litara,
             "Cijena goriva": gorivo_cijena,
             "Iznos": gorivo_iznos,
@@ -166,7 +174,7 @@ def call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja,
                                                                       "Registracija",
                                                                       "Gume"],
                                                              required=True),
-            "Dodatni opis (opciono)": st.column_config.TextColumn(help="Dodatni opis troška", default=""),
+            #"Dodatni opis (opciono)": st.column_config.TextColumn(help="Dodatni opis troška", default=""),
             "Kilometraža": st.column_config.NumberColumn(help="Kilometraža vozila",
                                                          default=float(0),
                                                          required=True,

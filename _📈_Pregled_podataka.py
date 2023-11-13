@@ -105,14 +105,15 @@ with sidebar:
 
     #datum = st.date_input("Unesite datum", format="DD.MM.YYYY")
     #st.write(type(datum))
-    odabir_tabele = st.selectbox("Odaberite tabelu iz baze podataka", ("Promet", "Gorivo", "Servis", "Kazne", "Trošak"))
+    odabir_tabele = st.selectbox("Odaberite tabelu iz baze podataka", ("Promet", "Gorivo", "Servis-Gume-Registracija", "Kazne", "Trošak"))
     st.info(f"Odabrali ste tabelu {odabir_tabele}.")
-base_query = f'SELECT * from {odabir_tabele};'
+base_query = f'SELECT * from `{odabir_tabele}`;'
 rest_of_query = ""
 
 with administracija_engine.connect() as administracija_connection:
     df = pd.read_sql(base_query, administracija_connection)
 
+######## PROMET ##############
 if odabir_tabele == "Promet":
 
     with sidebar:
@@ -337,7 +338,7 @@ if odabir_tabele == "Promet":
         with administracija_engine.connect() as administracija_connection:
             df = pd.read_sql(query, administracija_connection)
         
-
+######## GORIVO ##############
 if odabir_tabele == "Gorivo":
 
     with sidebar:
@@ -365,6 +366,27 @@ if odabir_tabele == "Gorivo":
         if st.session_state.donja_datum_gorivo != None and st.session_state.gornja_datum_gorivo != None:
             query_part_datum = f'AND Datum BETWEEN "{st.session_state.donja_datum_gorivo}" AND "{st.session_state.gornja_datum_gorivo}"'
         rest_of_query = rest_of_query + " " + query_part_datum
+
+        # KILOMETRAZA
+        donja_kilometraza = None
+        gornja_kilometraza = None
+        if 'donja_kilometraza_gorivo' not in st.session_state:
+            st.session_state.donja_kilometraza_gorivo = donja_kilometraza
+        if 'gornja_kilometraza_gorivo' not in st.session_state:
+            st.session_state.gornja_kilometraza_gorivo = gornja_kilometraza
+        query_part_kilometraza = "" 
+        with st.form("_raspon_kilometraze_gorivo", clear_on_submit=False):
+            st.write("Unesite raspon kilometraže")
+            donja_kilometraza = st.number_input("Donja granica", min_value=float(0))
+            gornja_kilometraza = st.number_input("Gornja granica", min_value=float(0))
+            if st.form_submit_button("Potvrda"):
+                donja_kilometraza = donja_kilometraza
+                gornja_kilometraza = gornja_kilometraza
+                st.session_state.donja_kilometraza_gorivo = donja_kilometraza
+                st.session_state.gornja_kilometraza_gorivo = gornja_kilometraza
+        if st.session_state.donja_kilometraza_gorivo != None and st.session_state.gornja_kilometraza_gorivo != None:
+            query_part_kilometraza = f'AND Kilometraža BETWEEN {st.session_state.donja_kilometraza_gorivo} AND {st.session_state.gornja_kilometraza_gorivo}'
+        rest_of_query = rest_of_query + " " + query_part_kilometraza 
 
         # NASUTA KOLICINA
         donja_nasuta_kolicina = None
@@ -478,8 +500,8 @@ if odabir_tabele == "Gorivo":
         with administracija_engine.connect() as administracija_connection:
             df = pd.read_sql(query, administracija_connection)
 
-
-if odabir_tabele == "Servis":
+######## SERVIS ##############
+if odabir_tabele == "Servis-Gume-Registracija":
 
     with sidebar:
 
@@ -594,10 +616,11 @@ if odabir_tabele == "Servis":
     # QUERY
     if rest_of_query.strip() != "":
         rest_of_query = rest_of_query.split("AND", maxsplit=1)[1].strip()
-        query = f'SELECT * from {odabir_tabele} WHERE {rest_of_query};'
+        query = f'SELECT * from `{odabir_tabele}` WHERE {rest_of_query};'
         with administracija_engine.connect() as administracija_connection:
             df = pd.read_sql(query, administracija_connection)
 
+######## KAZNE ##############
 if odabir_tabele == "Kazne":
 
     with sidebar:
@@ -682,7 +705,7 @@ if odabir_tabele == "Kazne":
         with administracija_engine.connect() as administracija_connection:
             df = pd.read_sql(query, administracija_connection)
 
-
+######## TROSAK ##############
 if odabir_tabele == "Trošak":
 
     with sidebar:
@@ -842,7 +865,10 @@ with st.columns([1, 1])[1]:
                 donja_datum = st.date_input("Od", format="DD.MM.YYYY")
                 gornja_datum = st.date_input("Do", format="DD.MM.YYYY")
                 if st.form_submit_button("Potvrda"):
-                    generate_report(donja_datum, gornja_datum, administracija_engine)
+                    try:
+                        generate_report(donja_datum, gornja_datum, administracija_engine)
+                    except OSError:
+                        st.error("Molim zatvorite već otvoren izvještaj.")
 
 # imena_kolona_query = f"""
 # SELECT COLUMN_NAME

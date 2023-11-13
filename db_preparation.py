@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS Gorivo (
 servis = """
 CREATE TABLE IF NOT EXISTS Servis (
     Datum DATE,
+    Opis VARCHAR(255),
     Kilometraža FLOAT,
     `Iznos (KM)` FLOAT,
     `Način plaćanja` ENUM('Gotovina', 'Žiralno', 'Kartica'),
@@ -78,6 +79,7 @@ CREATE TABLE IF NOT EXISTS Trošak (
     Opis ENUM('Operativni trošak', 'Terminal', 'Putarina', 'Mostarina', 'Gorivo',
               'Osiguranje', 'Telefon', 'Privatno', 'Pranje vozila', 'Ostalo', 'Registracija', 'Saobraćajne kazne',
               'Servis', 'Gume'),
+    `Dodatni opis (opciono)` VARCHAR(255),
     `Iznos (KM)` FLOAT,
     `Način plaćanja` ENUM('Gotovina', 'Žiralno', 'Kartica'),
     `Komentar/Napomena` VARCHAR(255)

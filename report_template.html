@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <title>Izvještaj</title>
 </head>
 <body>
     <h1>Izvještaj</h1>
-    <p>Datum: {{ current_date }}</p>
-    <p>Za period: {{ pocetni_datum }} - {{ krajnji_datum }}</p>
+    <p><i>Datum:</i> {{ current_date }}</p>
+    <p><i>Za period:</i> {{ pocetni_datum }} - {{ krajnji_datum }}</p>
 
     <h2>PROMET</h2>
-    <p>Promet gotovinski: {{ promet_gotovina }} KM</p>
-    <p>Promet žiralno: {{ promet_ziralno }} KM</p>
-    <p>Ukupno promet: {{ ukupno_promet }} KM</p>
-    <p>Od toga nenaplaćeno: {{ nenaplaceno }} KM</p>
-    <p>Broj gratis/pro-bono usluga: {{ broj_gratis }}</p>
+    <p><i>Promet gotovinski:</i> {{ promet_gotovina }} KM</p>
+    <p><i>Promet žiralno:</i> {{ promet_ziralno }} KM</p>
+    <p><i>Ukupno promet:</i> {{ ukupno_promet }} KM</p>
+    <p><i>Od toga nenaplaćeno:</i> {{ nenaplaceno }} KM</p>
+    <p><i>Broj gratis/pro-bono usluga:</i> {{ broj_gratis }}</p>
 
     {% if broj_gratis > 0 %}
     <table border="1">
@@ -44,25 +45,96 @@
     </table>
     {% endif %}
 
+
     <!-- GORIVO Section -->
     <h2>GORIVO</h2>
-    <p>Pređena kilometraža za odabrani period: {{ gorivo_predjena_kilometraza }} km</p>
-    <p>Po prosječnoj cijeni: {{ gorivo_prosjecna_cijena }} KM/l</p>
-    <p>Nasuta količina: {{ gorivo_nasuta_kolicina }} l</p>
-    <p>Ukupno plaćeno: {{ gorivo_ukupno_placeno }} KM</p>
+    <p><i>Pređena kilometraža za odabrani period:</i> {{ gorivo_predjena_kilometraza }} km</p>
+    <p><i>Po prosječnoj cijeni:</i> {{ gorivo_prosjecna_cijena }} KM/l</p>
+    <p><i>Nasuta količina:</i> {{ gorivo_nasuta_kolicina }} l</p>
+    <p><i>Ukupno plaćeno:</i> {{ gorivo_ukupno_placeno }} KM</p>
+
 
     <!-- KAZNE Section -->
     <h2>KAZNE</h2>
-    <p>Broj napravljenih prekršaja: {{ kazne_broj_prekrsaja }}</p>
-    <p>Ukupan trošak: {{ kazne_ukupan_trosak }} KM</p>
+    <p><i>Broj napravljenih prekršaja:</i> {{ kazne_broj_prekrsaja }}</p>
+    <p><i>Ukupan trošak:</i> {{ kazne_ukupan_trosak }} KM</p>
+
+    {% if kazne_broj_prekrsaja > 0 %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Datum</th>
+                <th>Prekršaj</th>
+                <th>Iznos</th>
+                <th>Komentar/Napomena</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in kazne_rows %}
+            <tr>
+                <td>{{ row['Datum'] }}</td>
+                <td>{{ row['Prekršaj'] }}</td>
+                <td>{{ row['Iznos (KM)'] }} km</td>
+                <td>{{ row['Komentar/Napomena'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 
     <!-- SERVIS Section -->
     <h2>SERVIS</h2>
-    <p>Broj napravljenih servisa: {{ servis_broj_servisa }}</p>
+    <p><i>Broj napravljenih servisa:</i> {{ servis_broj_servisa }}</p>
+
+    {% if servis_broj_servisa > 0 %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Datum</th>
+                <th>Opis</th>
+                <th>Iznos</th>
+                <th>Komentar/Napomena</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in servis_rows %}
+            <tr>
+                <td>{{ row['Datum'] }}</td>
+                <td>{{ row['Opis'] }}</td>
+                <td>{{ row['Iznos (KM)'] }} km</td>
+                <td>{{ row['Komentar/Napomena'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 
     <!-- TROSKOVI Section -->
     <h2>TROŠKOVI</h2>
-    <p>Iznos troškova za odabrani period: {{ trosak_ukupan_iznos }} KM</p>
-    <!-- Add other sections for KILOMETRAZA, GORIVO, KAZNE, SERVIS, and TROSKOVI as needed -->
+    <p><i>Iznos troškova za odabrani period:</i> {{ trosak_ukupan_iznos }} KM</p>
+
+    {% if trosak_ukupan_iznos > 0 %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Datum</th>
+                <th>Opis</th>
+                <th>Iznos</th>
+                <th>Komentar/Napomena</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in trosak_rows %}
+            <tr>
+                <td>{{ row['Datum'] }}</td>
+                <td>{{ row['Opis'] }}</td>
+                <td>{{ row['Iznos (KM)'] }} km</td>
+                <td>{{ row['Komentar/Napomena'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
 </body>
 </html>
