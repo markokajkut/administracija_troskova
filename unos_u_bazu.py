@@ -9,7 +9,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
             administracija_connection.execute(text("TRUNCATE TABLE Promet;"))
             for index, row in df.iterrows():
                 ########### USLUGA GOTOVINSKO ##################
-                if row["Način plaćanja"] == "Gotovina":
+                if row["Trošak(opis)"] == "Usluga naplativa" and row["Način plaćanja"] == "Gotovina" and row["Naplaćeno?"] != "GRATIS":
                     query = """
                     INSERT INTO Promet (`Redni broj`,
                                         Datum, 
@@ -68,9 +68,9 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                         administracija_connection.execute(text(query), parameters=row_dict)
                     except:
                         st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli. U tabeli ne smije stajati vrijednost "None".', icon="🚨")
-
+                
                 ########### USLUGA ZIRALNO ##################
-                if row["Način plaćanja"] == "Žiralno":
+                if row["Trošak(opis)"] == "Usluga naplativa" and row["Način plaćanja"] == "Žiralno" and row["Naplaćeno?"] != "GRATIS":
                     query = """
                     INSERT INTO Promet (`Redni broj`,
                                         Datum,
@@ -131,7 +131,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                         st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli. U tabeli ne smije stajati vrijednost "None".', icon="🚨")
                             
                 ########### USLUGA PROBONO ##################
-                if row["Način plaćanja"] == "Gratis":
+                if row["Trošak(opis)"] == "Usluga pro-bono" and row["Način plaćanja"] == "Gratis" and row["Naplaćeno?"] == "GRATIS":
                     query = """
                     INSERT INTO Promet (`Redni broj`,
                                         Datum, 
@@ -242,43 +242,10 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
             
         ########### TROSKOVI ODRZAVANJA ##################
         if vrsta_troska == "Troškovi održavanja (servis, registracija, gume)":
-            #administracija_connection.execute(text("TRUNCATE TABLE Trošak;"))
             administracija_connection.execute(text("TRUNCATE TABLE `Servis-Gume-Registracija`;"))
-
-            # ######### ISTOVREMENO AZURIRANJE TABELE TERENSKIH TROSKOVA ZBOG KOLONA KOJE SE PREKLAPAJU ############
-            # for index, row in df_terenski_troskovi.iterrows():
-            #     if row["Trošak(opis)"] != "Saobraćajne kazne":
-            #         query = """
-            #         INSERT INTO Trošak (`Redni broj`,
-            #                             Datum,
-            #                             Opis,
-            #                             `Dodatni opis (opciono)`,
-            #                             `Iznos (KM)`,
-            #                             `Način plaćanja`,
-            #                             `Komentar/Napomena`)
-            #                     VALUES (:redni_broj,
-            #                             :datum,
-            #                             :opis,
-            #                             :dodatni_opis,
-            #                             :iznos,
-            #                             :nacin_placanja,
-            #                             :komentar);
-            #                 """
-            #         row_dict = {"redni_broj": index+1,
-            #                     "datum": row["Datum"],
-            #                     "opis": row["Trošak(opis)"],
-            #                     "dodatni_opis": row["Dodatni opis (opciono)"],
-            #                     "iznos": row["Iznos"],
-            #                     "nacin_placanja": row["Način plaćanja"],
-            #                     "komentar": row["Komentar/Napomena"]}
-            #         if df_terenski_troskovi.loc[0, "Iznos"] != float(0):
-            #             administracija_connection.execute(text(query), parameters=row_dict)
-            #         else:
-            #             pass
 
             ########### SERVIS ##################
             for index, row in df.iterrows():
-                #if row["Trošak(opis)"] == "Servis":
                 query = """
                 INSERT INTO `Servis-Gume-Registracija` 
                                   (`Redni broj`,
@@ -315,69 +282,12 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                 except:
                     st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli. U tabeli ne smije stajati vrijednost "None".', icon="🚨")
 
-                # ########### OSTALI TROSKOVI IZ TABELE TROSKOVI ODRZAVANJA ##################        
-                # else:
-                #     query = """
-                #     INSERT INTO Trošak (`Redni broj`,
-                #                         Datum,
-                #                         Opis,
-                #                         `Dodatni opis (opciono)`,
-                #                         `Iznos (KM)`,
-                #                         `Način plaćanja`,
-                #                         `Komentar/Napomena`)
-                #                 VALUES (:redni_broj,
-                #                         :datum,
-                #                         :opis,
-                #                         :dodatni_opis,
-                #                         :iznos,
-                #                         :nacin_placanja,
-                #                         :komentar);
-                #             """
-                #     row_dict = {"redni_broj": index+1,
-                #                 "datum": row["Datum"],
-                #                 "opis": row["Trošak(opis)"],
-                #                 "dodatni_opis": row["Dodatni opis (opciono)"],
-                #                 "iznos": row["Iznos"],
-                #                 "nacin_placanja": row["Način plaćanja"],
-                #                 "komentar": row["Komentar/Napomena"]}
-                #     administracija_connection.execute(text(query), parameters=row_dict)
-
         ########### TERENSKI TROSKOVI ##################            
         if vrsta_troska == "Terenski troškovi (osiguranje, saobraćajne kazne...)":
 
             administracija_connection.execute(text("TRUNCATE TABLE Trošak;"))
             administracija_connection.execute(text("TRUNCATE TABLE Kazne;"))
 
-            # ######### ISTOVREMENO AZURIRANJE TABELE TROSKOVA ODRZAVANJA ZBOG KOLONA KOJE SE PREKLAPAJU ############
-            # for index, row in df_troskovi_odrzavanja.iterrows():
-            #     if row["Trošak(opis)"] != "Servis":
-            #         query = """
-            #         INSERT INTO Trošak (`Redni broj`,
-            #                             Datum,
-            #                             Opis,
-            #                             `Dodatni opis (opciono)`,
-            #                             `Iznos (KM)`,
-            #                             `Način plaćanja`,
-            #                             `Komentar/Napomena`)
-            #                     VALUES (:redni_broj,
-            #                             :datum,
-            #                             :opis,
-            #                             :dodatni_opis,
-            #                             :iznos,
-            #                             :nacin_placanja,
-            #                             :komentar);
-            #                 """
-            #         row_dict = {"redni_broj": index+1,
-            #                     "datum": row["Datum"],
-            #                     "opis": row["Trošak(opis)"],
-            #                     "dodatni_opis": row["Dodatni opis (opciono)"],
-            #                     "iznos": row["Iznos"],
-            #                     "nacin_placanja": row["Način plaćanja"],
-            #                     "komentar": row["Komentar/Napomena"]}
-            #         if df_troskovi_odrzavanja.loc[0, "Iznos"] != float(0):
-            #             administracija_connection.execute(text(query), parameters=row_dict)
-            #         else:
-            #             pass
 
             ########### SAOBRACAJNE KAZNE ##################
             for index, row in df.iterrows():

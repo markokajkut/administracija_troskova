@@ -6,6 +6,7 @@
 </head>
 <body>
     <h1>Izvještaj</h1>
+    <h2>Futuris SB Siniša Borjanić</h2>
     <p><i>Datum:</i> {{ current_date }}</p>
     <p><i>Za period:</i> {{ pocetni_datum }} - {{ krajnji_datum }}</p>
 
@@ -83,8 +84,10 @@
     {% endif %}
 
     <!-- SERVIS Section -->
-    <h2>SERVIS</h2>
-    <p><i>Broj napravljenih servisa:</i> {{ servis_broj_servisa }}</p>
+    <h2>SERVIS-GUME-REGISTRACIJA</h2>
+    <p><i>Troškovi servisa:</i> {{ servis_trosak_servisa }}</p>
+    <p><i>Troškovi zamjene/kupovine guma:</i> {{ servis_trosak_gume }}</p>
+    <p><i>Troškovi registracije:</i> {{ servis_trosak_registracija }}</p>
 
     {% if servis_broj_servisa > 0 %}
     <table border="1">

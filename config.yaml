@@ -1,0 +1,10 @@
+credentials:
+  usernames:
+    sinisaborjanic:
+      email: futuris_sb@gmail.com
+      name: Sinisa Borjanic
+      password: $2b$12$0qtEu.k5uQgS36ohMexlROpGI6GOZffRbFUMnvHITO.HMb0zIhCyG
+cookie:
+  expiry_days: 30
+  key: futuris_app_cookie_key
+  name: futuris_app_cookie

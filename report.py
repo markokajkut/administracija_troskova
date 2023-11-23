@@ -13,7 +13,7 @@ def generate_report(pocetni_datum, krajnji_datum, administracija_engine):
     with administracija_engine.connect() as connection:
         df_usluga = pd.read_sql(f"SELECT * FROM Promet WHERE Datum BETWEEN '{pocetni_datum}' AND '{krajnji_datum}'", con=connection)
         df_gorivo = pd.read_sql(f"SELECT * FROM Gorivo WHERE Datum BETWEEN '{pocetni_datum}' AND '{krajnji_datum}'", con=connection)
-        df_servis = pd.read_sql(f"SELECT * FROM Servis WHERE Datum BETWEEN '{pocetni_datum}' AND '{krajnji_datum}'", con=connection)
+        df_servis = pd.read_sql(f"SELECT * FROM `Servis-Gume-Registracija` WHERE Datum BETWEEN '{pocetni_datum}' AND '{krajnji_datum}'", con=connection)
         df_kazne = pd.read_sql(f"SELECT * FROM Kazne WHERE Datum BETWEEN '{pocetni_datum}' AND '{krajnji_datum}'", con=connection)
         df_trosak = pd.read_sql(f"SELECT * FROM Trošak WHERE Datum BETWEEN '{pocetni_datum}' AND '{krajnji_datum}'", con=connection)
 
@@ -43,6 +43,9 @@ def generate_report(pocetni_datum, krajnji_datum, administracija_engine):
 
         # Data for SERVIS DataFrame
         'servis_broj_servisa': len(df_servis),
+        'servis_trosak_servisa': "{:.2f}".format(df_servis[df_servis["Opis"] == "Servis"]['Iznos (KM)'].sum()),
+        'servis_trosak_gume': "{:.2f}".format(df_servis[df_servis["Opis"] == "Gume"]['Iznos (KM)'].sum()),
+        'servis_trosak_registracija': "{:.2f}".format(df_servis[df_servis["Opis"] == "Registracija"]['Iznos (KM)'].sum()),
         'servis_rows': df_servis.to_dict(orient='records'),
 
         # Data for TROSKOVI DataFrame

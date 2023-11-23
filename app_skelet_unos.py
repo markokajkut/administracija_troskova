@@ -67,11 +67,6 @@ nacin_placanja = st.column_config.SelectboxColumn(
             ],
             required=True
         )
-# naplaceno = st.column_config.CheckboxColumn(
-#            help="Da li je usluga naplaćena?",
-#            default=False
-#         )
-
 naplaceno = st.column_config.SelectboxColumn(
            help="Da li je usluga naplaćena?",
            default="DA",
@@ -141,7 +136,6 @@ def call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja,
 
     ############### GORIVO ###############    
     elif vrsta_troska == "Gorivo":
-        #df = df_gorivo
         st.session_state.edited_df_gorivo = st.data_editor(
         df_gorivo,
         column_config={
@@ -162,7 +156,6 @@ def call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja,
 
     ############### TROSKOVI ODRZAVANJA ###############
     elif vrsta_troska == "Troškovi održavanja (servis, registracija, gume)":
-        #df = df_troskovi_odrzavanja
         st.session_state.edited_df_troskovi_odrzavanja = st.data_editor(
         df_troskovi_odrzavanja,
         column_config={
@@ -174,7 +167,6 @@ def call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja,
                                                                       "Registracija",
                                                                       "Gume"],
                                                              required=True),
-            #"Dodatni opis (opciono)": st.column_config.TextColumn(help="Dodatni opis troška", default=""),
             "Kilometraža": st.column_config.NumberColumn(help="Kilometraža vozila",
                                                          default=float(0),
                                                          required=True,
@@ -191,7 +183,6 @@ def call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja,
 
     ############### TERENSKI TROSKOVI ###############    
     elif vrsta_troska == "Terenski troškovi (osiguranje, saobraćajne kazne...)":
-        #df = df_terenski_troskovi
         st.session_state.edited_df_terenski_troskovi = st.data_editor(
         df_terenski_troskovi,
         column_config={

@@ -28,28 +28,28 @@ services:
     #network_mode: "host"
 
 
-#   app:
-#     #image: markokajkut/administracija_troskova:latest
-#     image: streamlit/sl:1
-#     container_name: app
-#     build:
-#       context: .
-#     ports:
-#       - "8501:8501"
-#     depends_on:
-#       db:
-#         condition: service_healthy
-#     healthcheck:
-#       test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
-#       interval: 10s
-#       timeout: 10s
-#       retries: 5
-#       start_period: 20s
+  app:
+    #image: markokajkut/administracija_troskova:latest
+    image: streamlit/sl:1
+    container_name: app
+    build:
+      context: .
+    ports:
+      - "8501:8501"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
     
-#     #command: ["./entrypoint.sh"]
-#     # networks:
-#     #   - mynet
+    #command: ["./entrypoint.sh"]
+    # networks:
+    #   - mynet
 
-# # networks:
-# #   mynet:
-# #     driver: bridge
+# networks:
+#   mynet:
+#     driver: bridge

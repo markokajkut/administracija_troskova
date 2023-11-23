@@ -1,34 +1,38 @@
 # app/Dockerfile
 
-FROM python:3
+FROM python:3.10-slim-bullseye
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y
-RUN apt-get install build-essential
-RUN apt-get install curl
-RUN apt-get install software-properties-common -y
-RUN apt-get install git
-RUN rm -rf /var/lib/apt/lists/*
-RUN apt-get install pkg-config -y
-#RUN NEEDRESTART_MODE=a apt-get install python3-dev -y
-RUN apt-get install default-libmysqlclient-dev -y
-RUN apt-get install libmariadb-dev -y
-#RUN apt-get update && apt-get install -y python3 python3-pip 
+RUN DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    software-properties-common \
+    git \
+    pkg-config \
+    default-libmysqlclient-dev \
+    libmariadb-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    pkg-config \
+    default-libmysqlclient-dev \
+    libmariadb-dev 
 
 # RUN git clone https://github.com/markokajkut/administracija_troskova.git
 
-# COPY requirements.txt ./requirements.txt
+COPY requirements.txt _Pregled_podataka.py .env app_skelet_unos.py config.yaml entrypoint.sh report_template.html report.py unos_u_bazu.py weather.py app/
+COPY provision /app/provision
+COPY pages /app/pages
+#COPY app.py db_preparation.py .env entrypoint.sh ./
+RUN pip install -r app/requirements.txt
+#WORKDIR /app
 
-COPY app.py db_preparation.py .env entrypoint.sh ./
+# RUN pip install python-dotenv
+# RUN pip install mysqlclient
+# RUN pip install SQLAlchemy
+# RUN pip install streamlit
+# RUN pip install mariadb
 
-RUN pip install python-dotenv
-RUN pip install mysqlclient
-RUN pip install SQLAlchemy
-RUN pip install streamlit
-RUN pip install mariadb
-
-RUN chmod +x entrypoint.sh
+RUN chmod +x app/entrypoint.sh
 #RUN python db_preparation.py
 
 EXPOSE 8501
