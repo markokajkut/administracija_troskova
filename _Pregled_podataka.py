@@ -37,10 +37,10 @@ st.set_page_config(
 )
 st.markdown(footer,unsafe_allow_html=True)
 
-if "authentication_status" not in st.session_state:
-    st.session_state["authentication_status"] = None
-
-with open('.\config.yaml') as file:
+# if "authentication_status" not in st.session_state:
+#     st.session_state["authentication_status"] = None
+# st.write(st.session_state["authentication_status"])
+with open('./config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
 authenticator = stauth.Authenticate(
@@ -826,10 +826,12 @@ def main():
                             with st.spinner('Generisanje...'):
                                 generate_report(donja_datum, gornja_datum, administracija_engine)
                                 st.success('Izvještaj generisan!')
-                        except OSError:
-                            st.error("Molim zatvorite već otvoren izvještaj.")
+                        except Exception as e:
+                            print(e)
+                        #except OSError:
+                        #    st.error("Molim zatvorite već otvoren izvještaj.")
 
-if st.session_state["authentication_status"]:
+if st.session_state["authentication_status"] == True:
     authenticator.logout('Odjavite se', 'sidebar')
     main()
 elif st.session_state["authentication_status"] == False:

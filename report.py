@@ -4,8 +4,8 @@ import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
 
-path_wkhtmltopdf = 'C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe'
-config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+# path_wkhtmltopdf = 'C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe'
+# config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
 
 
 def generate_report(pocetni_datum, krajnji_datum, administracija_engine):
@@ -65,7 +65,7 @@ def generate_report(pocetni_datum, krajnji_datum, administracija_engine):
         report_file.write(rendered_html)
     
     # Create a PDF from the rendered HTML
-    pdfkit.from_file(html_filename, f'Izvještaj_{pocetni_datum}-{krajnji_datum}.pdf', configuration=config)
+    pdfkit.from_file(html_filename, f'Izvještaj_{pocetni_datum}-{krajnji_datum}.pdf')#, configuration=config)
 
     # Check if the file exists before attempting to delete
     if os.path.exists(html_filename):

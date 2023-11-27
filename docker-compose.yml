@@ -30,7 +30,7 @@ services:
 
   app:
     #image: markokajkut/administracija_troskova:latest
-    image: streamlit/sl:1
+    image: streamlit_administracija:latest
     container_name: app
     build:
       context: .

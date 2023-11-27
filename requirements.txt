@@ -2,9 +2,13 @@ python-dotenv
 mysqlclient
 SQLAlchemy
 streamlit
-#mariadb
+mariadb==1.0.11
 requests
 beautifulsoup4
 pandas
 pdfkit
 Jinja2
+PyYAML
+streamlit-nested-layout
+streamlit-authenticator
+PyMySQL

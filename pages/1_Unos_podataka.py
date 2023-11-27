@@ -3,6 +3,7 @@ import sys
 import os
 import pandas as pd
 import datetime
+import pymysql
 from sqlalchemy import create_engine
 from sqlalchemy.pool import QueuePool
 from dotenv import load_dotenv
