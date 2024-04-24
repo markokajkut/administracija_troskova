@@ -1,0 +1,2 @@
+sudo apt install pkg-config                         # for pip install mysqlclient
+sudo apt install libmariadb3 libmariadb-dev         # for pip install mariadb 

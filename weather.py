@@ -1,4 +1,5 @@
 import requests
+import pytz
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -7,6 +8,9 @@ def get_weather_data():
     # enter city name
     city = "Banja Luka"
     
+    # Specify the timezone
+    ce_timezone = pytz.timezone('Europe/Berlin')
+
     # create url
     url = "https://www.google.com/search?q="+"weather"+city
     
@@ -28,7 +32,7 @@ def get_weather_data():
     dan = time.split(" ")[0].capitalize()
     vrijeme = time.split(" ")[1]
     sky = time_and_sky.split('\n')[1]
-    datum = datetime.now()
+    datum = datetime.now(ce_timezone).date()
     datum = datum.strftime("%d.%m.%Y")
 
     return datum, dan, vrijeme, sky, temp

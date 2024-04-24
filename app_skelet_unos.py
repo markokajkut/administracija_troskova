@@ -1,6 +1,7 @@
 import streamlit as st
 import datetime
 
+# Kreiranje kolona za data editor za unos podataka - odredjivanje tipa kolone, pocetnu vrijednost itd
 datum = st.column_config.DateColumn(
             format="DD.MM.YYYY",
             default=datetime.date.today(),
@@ -45,8 +46,14 @@ ciljno_mjesto = st.column_config.TextColumn(
             help="Krajnja destinacija",
             default=""
         )
-kilometraza = st.column_config.NumberColumn(
-            help="Dužina puta od startnog do ciljnog mjesta",
+kilometraza_start = st.column_config.NumberColumn(
+            help="Kilometraža na satu na startu ture",
+            default=float(0),
+            min_value=float(0),
+            format="%.2f km"
+        )
+kilometraza_kraj = st.column_config.NumberColumn(
+            help="Kilometraža na satu na kraju ture",
             default=float(0),
             min_value=float(0),
             format="%.2f km"
@@ -97,6 +104,7 @@ benz_pumpa = st.column_config.TextColumn(
             default=""
 )
 
+# Funkcija za pozivanje data editora za unos podataka, sa trenutnim vrijednostima dataframe-ova
 def call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja, df_terenski_troskovi):
     
     ############### USLUGA DOMACA ILI USLUGA INOSTRANSTVO ###############
@@ -118,7 +126,8 @@ def call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja,
                                                          required=True),
             "Startno mjesto": startno_mjesto,
             "Ciljno mjesto": ciljno_mjesto,
-            "Kilometraža": kilometraza,
+            "Kilometraža na satu START": kilometraza_start,
+            "Kilometraža na satu KRAJ": kilometraza_kraj,
             "Iznos": iznos,
             "Način plaćanja": st.column_config.SelectboxColumn(help="Gotovina, žiralno, ili gratis",
                                                                default="Gotovina",
@@ -141,7 +150,7 @@ def call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja,
         column_config={
             "Datum": datum,
             "Trošak(opis)": st.column_config.TextColumn(help="Vrsta troška", default=vrsta_troska, disabled=True),
-            "Kilometraža": gorivo_kilometraza, 
+            "Kilometraža na satu": gorivo_kilometraza, 
             "Nasuta količina": gorivo_litara,
             "Cijena goriva": gorivo_cijena,
             "Iznos": gorivo_iznos,
@@ -167,7 +176,7 @@ def call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja,
                                                                       "Registracija",
                                                                       "Gume"],
                                                              required=True),
-            "Kilometraža": st.column_config.NumberColumn(help="Kilometraža vozila",
+            "Kilometraža na satu": st.column_config.NumberColumn(help="Kilometraža na satu vozila",
                                                          default=float(0),
                                                          required=True,
                                                          min_value=float(0),

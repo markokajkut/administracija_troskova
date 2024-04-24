@@ -5,14 +5,15 @@ volumes:
 services:
   db:
     image: mariadb
+    restart: always
     container_name: db
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_DATABASE: ${DB_ADMINISTRACIJA}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - data:/var/lib/mysql
+      - ./data:/var/lib/mysql
       - ./provision:/docker-entrypoint-initdb.d
     ports:
       - "3306:${DB_PORT}"
@@ -28,23 +29,30 @@ services:
     #network_mode: "host"
 
 
-  app:
-    #image: markokajkut/administracija_troskova:latest
-    image: streamlit_administracija:latest
-    container_name: app
-    build:
-      context: .
-    ports:
-      - "8501:8501"
-    depends_on:
-      db:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-      start_period: 20s
+  # # app:
+  # #   #image: markokajkut/administracija_troskova:latest
+  # #   image: administracija
+  # #   restart: always
+  # #   container_name: app
+  # #   build:
+  # #     context: .
+  # #   ports:
+  # #     - "8501:8501"
+  # #   depends_on:
+  # #     db:
+  # #       condition: service_healthy
+  # #   healthcheck:
+  # #     test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
+  # #     interval: 10s
+  # #     timeout: 10s
+  # #     retries: 5
+  # #     start_period: 20s
+    # labels:
+    #   - ofelia.job-exec.enable=true
+    #   - ofelia.job-exec.backend.schedule=@every 60s 
+    #   - ofelia.job-exec.backend.command=bash /app/cronfile.sh
+    #volumes:
+    #  - ./provision_app:/docker-entrypoint-cron.d
     
     #command: ["./entrypoint.sh"]
     # networks:
@@ -53,3 +61,24 @@ services:
 # networks:
 #   mynet:
 #     driver: bridge
+
+  # ofelia:
+  #   image: mcuadros/ofelia:latest
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     #- ./ofelia/config.ini:/etc/ofelia/config.ini
+  #   depends_on:
+  #     - app
+  #     - db
+  #   command: daemon --docker #&& ofelia daemon --config=/etc/ofelia/config.ini
+  #   #  - daemon --config=/etc/ofelia/config.ini
+  #     #- daemon --docker
+      
+  #   labels:
+  #     - ofelia.job-exec.enable=true
+  #     - ofelia.job-exec.report.schedule=@every 100s 
+  #     - ofelia.job-exec.report.command=bash /app/cronfile.sh
+  #     - ofelia.job-exec.report.container=app
+  #     - ofelia.job-exec.dbdump.schedule=@every 50s
+  #     - ofelia.job-exec.dbdump.command=mariadb-dump -u admin -padmin --databases administracija > /var/lib/mysql/administracija.sql
+  #     - ofelia.job-exec.dbdump.container=db

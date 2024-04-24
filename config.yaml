@@ -3,8 +3,11 @@ credentials:
     sinisaborjanic:
       email: futuris_sb@gmail.com
       name: Sinisa Borjanic
-      password: $2b$12$0qtEu.k5uQgS36ohMexlROpGI6GOZffRbFUMnvHITO.HMb0zIhCyG
+      password: $2b$12$1G6hY0HhvTvaS4xAceJP5eFiJa9BMNyv62BbRQnYFIRmQFp.7m9vm
 cookie:
   expiry_days: 30
   key: futuris_app_cookie_key
   name: futuris_app_cookie
+preauthorized:
+  emails:
+  - markokajkut1@gmail.com

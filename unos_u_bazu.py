@@ -1,7 +1,7 @@
-from sqlalchemy import text
 import streamlit as st
+from sqlalchemy import text
 
-def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_troskovi_odrzavanja, df_terenski_troskovi):
+def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df):
     with administracija_engine.connect() as administracija_connection:
         
         ########### USLUGA ##################
@@ -14,7 +14,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                     INSERT INTO Promet (`Redni broj`,
                                         Datum, 
                                         `Naziv(ime) klijenta`, 
-                                        Kilometraža, 
+                                        `Kilometraža pređena (km)`, 
                                         `Startno mjesto`, 
                                         `Ciljno mjesto`, 
                                         `Komentar/Napomena`, 
@@ -23,6 +23,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                         `Iznos žiralno (KM)`, 
                                         Plaćeno,
                                         `Operativni trošak (KM)`,
+                                        `Cijena po gaženom kilometru (KM/km)`,
                                         `Neto zarada (KM)`)
                                 VALUES (:redni_broj,
                                         :datum, 
@@ -35,12 +36,13 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                         :iznos_gotovina, 
                                         :iznos_ziralno, 
                                         :placeno, 
-                                        :op_trosak, 
+                                        :op_trosak,
+                                        :cijena_po_km, 
                                         :neto_zarada)
                                 ON DUPLICATE KEY UPDATE
                                         Datum = VALUES(Datum),
                                         `Naziv(ime) klijenta` = VALUES(`Naziv(ime) klijenta`), 
-                                        Kilometraža = VALUES(Kilometraža), 
+                                        `Kilometraža pređena (km)` = VALUES(`Kilometraža pređena (km)`), 
                                         `Startno mjesto` = VALUES(`Startno mjesto`), 
                                         `Ciljno mjesto` = VALUES(`Ciljno mjesto`),
                                         `Komentar/Napomena` = VALUES(`Komentar/Napomena`),
@@ -49,12 +51,13 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                         `Iznos žiralno (KM)` = VALUES(`Iznos žiralno (KM)`), 
                                         Plaćeno = VALUES(Plaćeno),
                                         `Operativni trošak (KM)` = VALUES(`Operativni trošak (KM)`),
+                                        `Cijena po gaženom kilometru (KM/km)` = VALUES(`Cijena po gaženom kilometru (KM/km)`),
                                         `Neto zarada (KM)` = VALUES(`Neto zarada (KM)`);
                             """
                     row_dict = {"redni_broj": index+1,
                                 "datum": row["Datum"], 
                                 "naziv_klijenta": row["Naziv(ime) klijenta"], 
-                                "kilometraza": row["Kilometraža"], 
+                                "kilometraza": row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"], 
                                 "startno_mjesto": row["Startno mjesto"], 
                                 "ciljno_mjesto": row["Ciljno mjesto"], 
                                 "komentar": row["Komentar/Napomena"],
@@ -63,6 +66,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                 "iznos_ziralno": float(0), 
                                 "placeno": row["Naplaćeno?"],
                                 "op_trosak": row["Operativni trošak"],
+                                "cijena_po_km": row["Iznos"]/(row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"]),
                                 "neto_zarada": row["Neto zarada"]}
                     try:
                         administracija_connection.execute(text(query), parameters=row_dict)
@@ -75,7 +79,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                     INSERT INTO Promet (`Redni broj`,
                                         Datum,
                                         `Naziv(ime) klijenta`, 
-                                        Kilometraža, 
+                                        `Kilometraža pređena (km)`, 
                                         `Startno mjesto`, 
                                         `Ciljno mjesto`, 
                                         `Komentar/Napomena`, 
@@ -84,6 +88,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                         `Iznos žiralno (KM)`, 
                                         Plaćeno,
                                         `Operativni trošak (KM)`,
+                                        `Cijena po gaženom kilometru (KM/km)`,
                                         `Neto zarada (KM)`)
                                 VALUES (:redni_broj,
                                         :datum, 
@@ -96,12 +101,13 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                         :iznos_gotovina, 
                                         :iznos_ziralno, 
                                         :placeno, 
-                                        :op_trosak, 
+                                        :op_trosak,
+                                        :cijena_po_km,                                          
                                         :neto_zarada)
                                 ON DUPLICATE KEY UPDATE
                                         Datum = VALUES(Datum),
                                         `Naziv(ime) klijenta` = VALUES(`Naziv(ime) klijenta`), 
-                                        Kilometraža = VALUES(Kilometraža), 
+                                        `Kilometraža pređena (km)` = VALUES(`Kilometraža pređena (km)`), 
                                         `Startno mjesto` = VALUES(`Startno mjesto`), 
                                         `Ciljno mjesto` = VALUES(`Ciljno mjesto`),
                                         `Komentar/Napomena` = VALUES(`Komentar/Napomena`),
@@ -110,12 +116,13 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                         `Iznos žiralno (KM)` = VALUES(`Iznos žiralno (KM)`), 
                                         Plaćeno = VALUES(Plaćeno),
                                         `Operativni trošak (KM)` = VALUES(`Operativni trošak (KM)`),
+                                        `Cijena po gaženom kilometru (KM/km)` = VALUES(`Cijena po gaženom kilometru (KM/km)`),
                                         `Neto zarada (KM)` = VALUES(`Neto zarada (KM)`);
                             """
                     row_dict = {"redni_broj": index+1,
                                 "datum": row["Datum"],
                                 "naziv_klijenta": row["Naziv(ime) klijenta"], 
-                                "kilometraza": row["Kilometraža"], 
+                                "kilometraza": row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"], 
                                 "startno_mjesto": row["Startno mjesto"], 
                                 "ciljno_mjesto": row["Ciljno mjesto"], 
                                 "komentar": row["Komentar/Napomena"],
@@ -124,6 +131,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                 "iznos_ziralno": row["Iznos"], 
                                 "placeno": row["Naplaćeno?"],
                                 "op_trosak": row["Operativni trošak"],
+                                "cijena_po_km": row["Iznos"]/(row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"]),
                                 "neto_zarada": row["Neto zarada"]}
                     try:
                         administracija_connection.execute(text(query), parameters=row_dict)
@@ -136,7 +144,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                     INSERT INTO Promet (`Redni broj`,
                                         Datum, 
                                         `Naziv(ime) klijenta`, 
-                                        Kilometraža, 
+                                        `Kilometraža pređena (km)`, 
                                         `Startno mjesto`, 
                                         `Ciljno mjesto`,
                                         `Komentar/Napomena`, 
@@ -144,7 +152,8 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                         `Iznos gotovina (KM)`, 
                                         `Iznos žiralno (KM)`, 
                                         Plaćeno, 
-                                        `Operativni trošak (KM)`, 
+                                        `Operativni trošak (KM)`,
+                                        `Cijena po gaženom kilometru (KM/km)`, 
                                         `Neto zarada (KM)`)
                                 VALUES (:redni_broj,
                                         :datum, 
@@ -157,12 +166,13 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                         :iznos_gotovina, 
                                         :iznos_ziralno, 
                                         :placeno, 
-                                        :op_trosak, 
+                                        :op_trosak,
+                                        :cijena_po_km, 
                                         :neto_zarada)
                                 ON DUPLICATE KEY UPDATE
                                         Datum = VALUES(Datum),
                                         `Naziv(ime) klijenta` = VALUES(`Naziv(ime) klijenta`), 
-                                        Kilometraža = VALUES(Kilometraža), 
+                                        `Kilometraža pređena (km)` = VALUES(`Kilometraža pređena (km)`), 
                                         `Startno mjesto` = VALUES(`Startno mjesto`), 
                                         `Ciljno mjesto` = VALUES(`Ciljno mjesto`),
                                         `Komentar/Napomena` = VALUES(`Komentar/Napomena`),
@@ -171,12 +181,13 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                         `Iznos žiralno (KM)` = VALUES(`Iznos žiralno (KM)`), 
                                         Plaćeno = VALUES(Plaćeno),
                                         `Operativni trošak (KM)` = VALUES(`Operativni trošak (KM)`),
+                                        `Cijena po gaženom kilometru (KM/km)` = VALUES(`Cijena po gaženom kilometru (KM/km)`),
                                         `Neto zarada (KM)` = VALUES(`Neto zarada (KM)`);
                             """
                     row_dict = {"redni_broj": index+1,
                                 "datum": row["Datum"],
                                 "naziv_klijenta": row["Naziv(ime) klijenta"],
-                                "kilometraza": row["Kilometraža"],
+                                "kilometraza": row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"],
                                 "startno_mjesto": row["Startno mjesto"],
                                 "ciljno_mjesto": row["Ciljno mjesto"],
                                 "komentar": row["Komentar/Napomena"],
@@ -185,6 +196,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                 "iznos_ziralno": float(0),
                                 "placeno": row["Naplaćeno?"],
                                 "op_trosak": row["Operativni trošak"],
+                                "cijena_po_km": row["Iznos"]/(row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"]),
                                 "neto_zarada": row["Neto zarada"]}
                     try:
                         administracija_connection.execute(text(query), parameters=row_dict)
@@ -199,9 +211,9 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                 query = """
                 INSERT INTO Gorivo (`Redni broj`,
                                     Datum,
-                                    Kilometraža, 
+                                    `Kilometraža na satu (km)`, 
                                     `Nasuta količina (l)`, 
-                                    `Cijena goriva (KM)`, 
+                                    `Cijena goriva (KM/l)`, 
                                     `Iznos (KM)`, 
                                     `Način plaćanja`, 
                                     `Benzinska pumpa`,  
@@ -217,9 +229,9 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                     :komentar)
                             ON DUPLICATE KEY UPDATE
                                     Datum = VALUES(Datum),
-                                    Kilometraža = VALUES(Kilometraža),
+                                    `Kilometraža na satu (km)` = VALUES(`Kilometraža na satu (km)`),
                                     `Nasuta količina (l)` = VALUES(`Nasuta količina (l)`), 
-                                    `Cijena goriva (KM)` = VALUES(`Cijena goriva (KM)`), 
+                                    `Cijena goriva (KM/l)` = VALUES(`Cijena goriva (KM/l)`), 
                                     `Iznos (KM)` = VALUES(`Iznos (KM)`), 
                                     `Način plaćanja` = VALUES(`Način plaćanja`),
                                     `Benzinska pumpa` = VALUES(`Benzinska pumpa`),  
@@ -227,7 +239,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                         """
                 row_dict = {"redni_broj": index+1,
                             "datum": row["Datum"],
-                            "kilometraza": row["Kilometraža"],
+                            "kilometraza": row["Kilometraža na satu"],
                             "nasuta_kolicina": row["Nasuta količina"], 
                             "cijena_goriva": row["Cijena goriva"], 
                             "gorivo_iznos": row["Iznos"],
@@ -235,9 +247,9 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                             "naziv_pumpe": row["Naziv benzinske pumpe"], 
                             "komentar": row["Komentar/Napomena"]}
                 try:
-                        administracija_connection.execute(text(query), parameters=row_dict)
+                    administracija_connection.execute(text(query), parameters=row_dict)
                 except:
-                        st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli. U tabeli ne smije stajati vrijednost "None".', icon="🚨")
+                    st.error('Došlo je do greške, provjerite unešene vrijednosti u tabeli. U tabeli ne smije stajati vrijednost "None".', icon="🚨")
 
             
         ########### TROSKOVI ODRZAVANJA ##################
@@ -251,7 +263,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                                   (`Redni broj`,
                                     Datum,
                                     Opis,
-                                    Kilometraža,
+                                    `Kilometraža na satu (km)`,
                                     `Iznos (KM)`,
                                     `Način plaćanja`,
                                     `Komentar/Napomena`)
@@ -265,7 +277,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                             ON DUPLICATE KEY UPDATE
                                     Datum = VALUES(Datum),
                                     Opis = VALUES(Opis),
-                                    Kilometraža = VALUES(Kilometraža),
+                                    `Kilometraža na satu (km)` = VALUES(`Kilometraža na satu (km)`),
                                     `Iznos (KM)` = VALUES(`Iznos (KM)`),
                                     `Način plaćanja` = VALUES(`Način plaćanja`),
                                     `Komentar/Napomena` = VALUES(`Komentar/Napomena`);
@@ -273,7 +285,7 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df, df_trosk
                 row_dict = {"redni_broj": index+1,
                             "datum": row["Datum"],
                             "opis": row["Trošak(opis)"],
-                            "kilometraza": row["Kilometraža"],
+                            "kilometraza": row["Kilometraža na satu"],
                             "iznos": row["Iznos"],
                             "nacin_placanja": row["Način plaćanja"],
                             "komentar": row["Komentar/Napomena"]}
