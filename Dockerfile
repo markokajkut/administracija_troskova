@@ -23,14 +23,20 @@ RUN DEBIAN_FRONTEND=noninteractive && apt-get update --fix-missing && apt-get in
 # RUN git clone https://github.com/markokajkut/administracija_troskova.git
 
 #COPY requirements.txt _Pregled_podataka.py .env app_skelet_unos.py config.yaml entrypoint.sh report_template.html report.py unos_u_bazu.py weather.py send_report_to_mail.py ./
-COPY app ./
-COPY provision/cronfile.sh ./provision/cronfile.sh
-COPY provision/entrypoint.sh ./provision/entrypoint.sh
+RUN mkdir ./app
+RUN mkdir ./reports
+RUN mkdir ./provision
+RUN mkdir ./templates
+
+COPY app ./app/
+COPY provision ./provision/
+COPY templates ./templates/
 COPY requirements.txt ./
+COPY .env ./app/
+COPY config.yaml ./
 #COPY pages ./pages
 #COPY cronfile /etc/cron.d/cronfile
 #COPY wkhtmltox_0.12.6.1-2.bullseye_amd64.deb /usr/local/bin
-RUN mkdir ./reports
 #COPY provision_app ./provision_app
 #COPY app.py db_preparation.py .env entrypoint.sh ./
 RUN pip install --no-cache-dir -r requirements.txt
@@ -42,6 +48,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 #RUN crontab /etc/cron.d/cronfile
 # Add the cron job directly in the Dockerfile
 RUN chmod +x ./provision/cronfile.sh
+RUN chmod +x ./provision/entrypoint.sh
 #ADD crontab /etc/cron.d/my-cron-file
 #USER root
 #RUN echo "* * * * * ./cronfile.sh >> /var/log/cronjob.log 2>&1" | crontab -

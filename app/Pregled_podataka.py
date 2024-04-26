@@ -33,9 +33,9 @@ st.set_page_config(
     layout="wide",
 )
 
-if not os.path.exists(".streamlit/config.toml"):
-    os.makedirs(".streamlit")
-    with open(".streamlit/config.toml", "w") as file:
+if not os.path.exists(f"{current_dir}/.streamlit/config.toml"):
+    os.makedirs(f"{current_dir}/.streamlit")
+    with open(f"{current_dir}/.streamlit/config.toml", "w") as file:
         file.write(
 '''[theme]
 secondaryBackgroundColor = "#E9F4FD"

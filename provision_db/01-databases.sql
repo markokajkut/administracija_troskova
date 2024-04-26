@@ -1,4 +1,8 @@
 GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' IDENTIFIED BY 'admin';
+SET PASSWORD FOR 'netdata'@'%' = PASSWORD('admin');
+GRANT USAGE, REPLICATION CLIENT, PROCESS ON *.* TO 'netdata'@'%';
+SET PASSWORD FOR 'root'@'%' = PASSWORD('admin');
+FLUSH PRIVILEGES;
 CREATE DATABASE IF NOT EXISTS `Unos`;
 SET character_set_server = 'utf8';
 SET collation_server = 'utf8mb3_croatian_ci';
