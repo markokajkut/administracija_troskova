@@ -1,9 +1,9 @@
 __pycache__
-.vagrant
+app/__pycache__
 data
 myproject
 myproject_ubuntu
 my.cnf
-"Sinisa Borjanic.rar"
 test.ipynb
-"za Marka.xlsx"
+.env
+app/.env

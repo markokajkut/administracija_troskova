@@ -9,11 +9,14 @@ from report import generate_report, delete_pdf_after_download
 
 load_dotenv()
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+
 # Logo prikaz
 def img():
     _, _, _, _, _, _, _, _, _, col10 = st.columns(10)
     with col10:
-        st.image("logo.jpg")
+        st.image(f"{parent_dir}/templates/logo.jpg")
 
 # Ciscenje st.session_state varijabli
 def clear_cache():
@@ -90,7 +93,7 @@ def report_form():
                 except Exception as e:
                     st.error(f"Greška pri generisanju. Pokušajte ponovo. {e}")
         if st.session_state.report_generated_status == True:
-                    with open(f"./reports/{pdf_filename}", "rb") as file:
+                    with open(f"{parent_dir}/reports/{pdf_filename}", "rb") as file:
                         dwnld_btn = st.download_button(label="Preuzmite izvještaj",
                                                        data=file,
                                                        file_name=pdf_filename,

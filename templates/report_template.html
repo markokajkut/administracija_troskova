@@ -3,25 +3,25 @@
 <head>
     <meta charset="utf-8">
     <title>Izvještaj</title>
+    <style type="text/css">
+            table { page-break-inside:avoid }
+    </style>
 </head>
 <body>
-    <!-- <div align="right" class="logo">
-        <img src="logo.jpg" align="top" width="10%" height="10%"/>
-    </div> -->
     <h1>Futuris SB Siniša Borjanić</h1>
-    <hr>
     <h1>Izvještaj</h1>
+    <hr>
     <p><i>Datum:</i> {{ current_date }}</p>
     <p><i>Za period:</i> {{ pocetni_datum }} - {{ krajnji_datum }}</p>
+    <p><i>Stanje na kilometar satu:</i> {{ stanje_na_satu }} <i>km</i></p>
     <hr>
-    <p><i>Stanje na kilometar satu:</i> {{ stanje_na_satu }} km</p>
     <h2>PROMET</h2>
-    <p><i>Pređena kilometraža za odabrani period:</i> {{ predjeno_kilometara }} km</p>
-    <p><i>Promet gotovinski:</i> {{ promet_gotovina }} KM</p>
-    <p><i>Promet žiralno:</i> {{ promet_ziralno }} KM</p>
-    <p><i>Ukupno promet:</i> {{ ukupno_promet }} KM</p>
-    <p><i>Od toga nenaplaćeno:</i> {{ nenaplaceno }} KM</p>
-    <p><i>Prosječna cijena po gaženom kilometru:</i> {{ prosjecna_cijena_po_gazenom_km }} KM/km</p>
+    <p><i>Pređena kilometraža za odabrani period:</i> {{ predjeno_kilometara }} <i>km</i></p>
+    <p><i>Promet gotovinski:</i> {{ promet_gotovina }} <i>KM</i></p>
+    <p><i>Promet žiralno:</i> {{ promet_ziralno }} <i>KM</i></p>
+    <p><i>Ukupno promet:</i> {{ ukupno_promet }} <i>KM</i></p>
+    <p><i>Od toga nenaplaćeno:</i> {{ nenaplaceno }} <i>KM</i></p>
+    <p><i>Prosječna cijena po gaženom kilometru:</i> {{ prosjecna_cijena_po_gazenom_km }} <i>KM/km</i></p>
     <p><i>Broj gratis/pro-bono usluga:</i> {{ broj_gratis }}</p>
 
     {% if broj_gratis > 0 %}
@@ -53,22 +53,20 @@
     </table>
     {% endif %}
 
-
     <!-- GORIVO Section -->
     <hr>
     <h2>GORIVO</h2>
-    <p><i>Nasuta količina:</i> {{ gorivo_nasuta_kolicina }} l</p>
-    <p><i>Po prosječnoj cijeni:</i> {{ gorivo_prosjecna_cijena }} KM/l</p>
-    <p><i>Ukupno plaćeno:</i> {{ gorivo_ukupno_placeno }} KM</p>
-    <p><i>Potrošnja goriva:</i> {{ gorivo_potrosnja }} l/100km</p>
-    <p><i>Po prosječnoj cijeni:</i> {{ gorivo_prosjecna_cijena_potrosnje }} KM/100km</p>
-
+    <p><i>Nasuta količina:</i> {{ gorivo_nasuta_kolicina }} <i>l</i></p>
+    <p><i>Po prosječnoj cijeni:</i> {{ gorivo_prosjecna_cijena }} <i>KM/l</i></p>
+    <p><i>Ukupno plaćeno:</i> {{ gorivo_ukupno_placeno }} <i>KM</i></p>
+    <p><i>Potrošnja goriva:</i> {{ gorivo_potrosnja }} <i>l/100km</i></p>
+    <p><i>Po prosječnoj cijeni:</i> {{ gorivo_prosjecna_cijena_potrosnje }} <i>KM/100km</i></p>
 
     <!-- KAZNE Section -->
     <hr>
     <h2>KAZNE</h2>
     <p><i>Broj napravljenih prekršaja:</i> {{ kazne_broj_prekrsaja }}</p>
-    <p><i>Ukupan trošak:</i> {{ kazne_ukupan_trosak }} KM</p>
+    <p><i>Ukupan trošak:</i> {{ kazne_ukupan_trosak }} <i>KM</i></p>
 
     {% if kazne_broj_prekrsaja > 0 %}
     <table border="1">
@@ -96,9 +94,9 @@
     <!-- SERVIS Section -->
     <hr>
     <h2>SERVIS-GUME-REGISTRACIJA</h2>
-    <p><i>Troškovi servisa:</i> {{ servis_trosak_servisa }} KM</p>
-    <p><i>Troškovi zamjene/kupovine guma:</i> {{ servis_trosak_gume }} KM</p>
-    <p><i>Troškovi registracije:</i> {{ servis_trosak_registracija }} KM</p>
+    <p><i>Troškovi servisa:</i> {{ servis_trosak_servisa }} <i>KM</i></p>
+    <p><i>Troškovi zamjene/kupovine guma:</i> {{ servis_trosak_gume }} <i>KM</i></p>
+    <p><i>Troškovi registracije:</i> {{ servis_trosak_registracija }} <i>KM</i></p>
 
     {% if servis_broj_servisa > 0 %}
     <table border="1">
@@ -106,6 +104,7 @@
             <tr>
                 <th>Datum</th>
                 <th>Opis</th>
+                <th>Kilometraža na satu</th>
                 <th>Iznos</th>
                 <th>Komentar/Napomena</th>
             </tr>
@@ -115,7 +114,8 @@
             <tr>
                 <td>{{ row['Datum'] }}</td>
                 <td>{{ row['Opis'] }}</td>
-                <td>{{ row['Iznos (KM)'] }} km</td>
+                <td>{{ row['Kilometraža na satu (km)'] }} km</td>
+                <td>{{ row['Iznos (KM)'] }} KM</td>
                 <td>{{ row['Komentar/Napomena'] }}</td>
             </tr>
             {% endfor %}
@@ -126,7 +126,7 @@
     <!-- TROSKOVI Section -->
     <hr>
     <h2>TROŠKOVI</h2>
-    <p><i>Iznos troškova za odabrani period:</i> {{ trosak_ukupan_iznos }} KM</p>
+    <p><i>Iznos troškova za odabrani period:</i> {{ trosak_ukupan_iznos }} <i>KM</i></p>
 
     {% if trosak_ukupan_iznos > 0 %}
     <table border="1">
@@ -143,7 +143,7 @@
             <tr>
                 <td>{{ row['Datum'] }}</td>
                 <td>{{ row['Opis'] }}</td>
-                <td>{{ row['Iznos (KM)'] }} km</td>
+                <td>{{ row['Iznos (KM)'] }} KM</td>
                 <td>{{ row['Komentar/Napomena'] }}</td>
             </tr>
             {% endfor %}
@@ -153,6 +153,7 @@
 
     <hr>
     <h2>OSTALO</h2>
-    <p><i>Pređeno kilometara u druge svrhe:</i> {{ gorivo_potroseno_privatno }} km</p>
+    <p><i>Pređeno kilometara u druge svrhe:</i> {{ gorivo_potroseno_privatno }} <i>km</i></p>
+
 </body>
 </html>

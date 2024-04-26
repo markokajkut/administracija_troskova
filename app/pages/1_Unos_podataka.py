@@ -1,17 +1,14 @@
-import sys
 import os
 import datetime
 import streamlit as st
 import pandas as pd
 from dotenv import load_dotenv
-#sys.path.append(os.path.dirname(os.getcwd()))
 from unos_u_bazu import unos_u_bazu_administracija, unos_u_bazu_unos
 from app_skelet_unos import call_data_editor
 from helpers import landing_page, engine_sqlalchemy, check_df_len, img
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
-
 
 load_dotenv()
 
@@ -28,7 +25,7 @@ left: -40px;
 }
 </style>
 <div class="footer">
-<p>By Marko Kajkut, markokajkut1@gmail.com <a style='display: block; text-align: center;'</p>
+<p>By <i>Marko Kajkut</i>, <i>markokajkut1@gmail.com</i> <a style='display: block; text-align: center;'</p>
 </div>
 """
 

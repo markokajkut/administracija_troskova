@@ -1,17 +1,16 @@
 import os
 import pdfkit
-# import base64
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
 
-#path_wkhtmltopdf = '/usr/bin/wkhtmltopdf'
-path_wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+
+path_wkhtmltopdf = '/usr/bin/wkhtmltopdf'
+#path_wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
 config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
 
-# def get_image_file_as_base64_data():
-#     with open("logo.jpg", 'rb') as image_file:
-#         return base64.b64encode(image_file.read())
     
 def generate_report(pocetni_datum, krajnji_datum, administracija_engine):
 
@@ -50,8 +49,7 @@ def generate_report(pocetni_datum, krajnji_datum, administracija_engine):
             
         if not (df_servis.empty and df_gorivo.empty):
             combined_gorivo_servis = pd.concat([df_gorivo, df_servis]).reset_index(drop=True)
-            km_sat_stanje_index = combined_gorivo_servis['Datum'].idxmax()
-            km_sat_stanje = combined_gorivo_servis.at[km_sat_stanje_index, "Kilometraža na satu (km)"]
+            km_sat_stanje = int(combined_gorivo_servis["Kilometraža na satu (km)"].max())
         else:
             km_sat_stanje = "Nema podataka"
         
@@ -102,24 +100,27 @@ def generate_report(pocetni_datum, krajnji_datum, administracija_engine):
             'stanje_na_satu': km_sat_stanje,
             'gorivo_potroseno_privatno': abs((df_gorivo["Kilometraža na satu (km)"].values[-1] - df_gorivo["Kilometraža na satu (km)"].values[0]) - df_usluga['Kilometraža pređena (km)'].sum()) \
                                          if not df_gorivo.empty else "Nema podataka",
-            #'logo': get_image_file_as_base64_data()
         }
 
-        env = Environment(loader=FileSystemLoader('.'))
-        template = env.get_template('report_template.html')
+        env = Environment(loader=FileSystemLoader(f'{parent_dir}/templates'))
+        template = env.get_template(f'{parent_dir}/templates/report_template.html')
 
         # Render the template with data
         rendered_html = template.render(template_data)
 
-        html_filename = f'Izvještaj_{pocetni_datum_format}-{krajnji_datum_format}.html'
+        html_filename = f'{parent_dir}/templates/Izvještaj_{pocetni_datum_format}-{krajnji_datum_format}.html'
         # Save the report to a file (or send it as an email, etc.)
         with open(html_filename, 'w', encoding='utf-8') as report_file:
             report_file.write(rendered_html)
         
-        pdf_filename = f'Izvještaj_{pocetni_datum_format}-{krajnji_datum_format}.pdf'
+        pdf_filename = f'{parent_dir}/reports/Izvještaj_{pocetni_datum_format}-{krajnji_datum_format}.pdf'
+        options = {
+            "enable-local-file-access": True,
+            "encoding": "UTF-8"
+        }
         # Create a PDF from the rendered HTML
-        # pdfkit.from_file(html_filename, f'./reports/{pdf_filename}', configuration=config, options={"enable-local-file-access": ""})
-        pdfkit.from_file(html_filename, pdf_filename, configuration=config)
+        pdfkit.from_file(html_filename, f'{parent_dir}/reports/{pdf_filename}', configuration=config, options=options, verbose=True)
+        # pdfkit.from_file(html_filename, pdf_filename, configuration=config, options=options, verbose=True)
 
         # Check if the file exists before attempting to delete
         if os.path.exists(html_filename):
@@ -132,7 +133,7 @@ def generate_report(pocetni_datum, krajnji_datum, administracija_engine):
 def delete_pdf_after_download(pdf_filename):
 
     # Check if the file exists before attempting to delete
-    if os.path.exists(f'./reports/{pdf_filename}'):
-        os.remove(f'./reports/{pdf_filename}')
+    if os.path.exists(f'{parent_dir}/reports/{pdf_filename}'):
+        os.remove(f'{parent_dir}/reports/{pdf_filename}')
     else:
         pass

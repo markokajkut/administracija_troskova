@@ -22,9 +22,12 @@ RUN DEBIAN_FRONTEND=noninteractive && apt-get update --fix-missing && apt-get in
 #RUN apt-get update && apt-get install -y dos2unix
 # RUN git clone https://github.com/markokajkut/administracija_troskova.git
 
-COPY requirements.txt _Pregled_podataka.py .env app_skelet_unos.py config.yaml entrypoint.sh report_template.html report.py unos_u_bazu.py weather.py send_report_to_mail.py ./
-COPY provision_app/cronfile.sh ./
-COPY pages ./pages
+#COPY requirements.txt _Pregled_podataka.py .env app_skelet_unos.py config.yaml entrypoint.sh report_template.html report.py unos_u_bazu.py weather.py send_report_to_mail.py ./
+COPY app ./
+COPY provision/cronfile.sh ./provision/cronfile.sh
+COPY provision/entrypoint.sh ./provision/entrypoint.sh
+COPY requirements.txt ./
+#COPY pages ./pages
 #COPY cronfile /etc/cron.d/cronfile
 #COPY wkhtmltox_0.12.6.1-2.bullseye_amd64.deb /usr/local/bin
 RUN mkdir ./reports
@@ -35,10 +38,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 #RUN chmod 0744 ./send_report_to_mail.py
 #RUN chmod 0644 /etc/cron.d/cronfile
 # Create the log file to be able to run tail
-RUN touch /var/log/cronjob.log
+#RUN touch /var/log/cronjob.log
 #RUN crontab /etc/cron.d/cronfile
 # Add the cron job directly in the Dockerfile
-RUN chmod +x ./cronfile.sh
+RUN chmod +x ./provision/cronfile.sh
 #ADD crontab /etc/cron.d/my-cron-file
 #USER root
 #RUN echo "* * * * * ./cronfile.sh >> /var/log/cronjob.log 2>&1" | crontab -
@@ -53,7 +56,7 @@ RUN chmod +x ./cronfile.sh
 #RUN crontab -l cronfile
 #RUN curl -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb
 #RUN dpkg -i wkhtmltox_0.12.6.1-2.bullseye_amd64.deb
-RUN chmod +x ./entrypoint.sh
+###RUN chmod +x ./entrypoint.sh
 # Give execution rights on the cron job
 #RUN chmod 0644 /etc/cron.d/my-cron
 #RUN chmod +x wkhtmltox_0.12.6.1-2.bullseye_amd64.deb
@@ -63,7 +66,7 @@ EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["./provision/entrypoint.sh"]
 #CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
 # Run the command on container startup
 #CMD ["cron", "-f"]

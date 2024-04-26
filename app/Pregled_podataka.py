@@ -6,6 +6,9 @@ from yaml.loader import SafeLoader
 from filter_results import filter_results
 from helpers import landing_page, engine_sqlalchemy, img, report_form
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+
 footer="""<style>
 .footer {
 position: fixed;
@@ -19,7 +22,7 @@ left: -40px;
 }
 </style>
 <div class="footer">
-<p>By Marko Kajkut, markokajkut1@gmail.com <a style='display: block; text-align: center;'</p>
+<p>By <i>Marko Kajkut</i>, <i>markokajkut1@gmail.com</i> <a style='display: block; text-align: center;'</p>
 </div>
 """
 
@@ -35,7 +38,7 @@ if not os.path.exists(".streamlit/config.toml"):
     with open(".streamlit/config.toml", "w") as file:
         file.write(
 '''[theme]
-secondaryBackgroundColor = "#E9FDFD"
+secondaryBackgroundColor = "#E9F4FD"
 '''
         )
     
@@ -51,7 +54,7 @@ if "report_generated_status" not in st.session_state:
     st.session_state.report_generated_status = False
 
 # Konfiguracija login forme i autentifikacije
-with open('./config.yaml') as file:
+with open(f'{parent_dir}/config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
 
 authenticator = stauth.Authenticate(

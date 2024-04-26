@@ -7,6 +7,8 @@ services:
     image: mariadb
     restart: always
     container_name: db
+    env_file:
+      - ./.env
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_ADMINISTRACIJA}
@@ -29,24 +31,24 @@ services:
     #network_mode: "host"
 
 
-  # # app:
-  # #   #image: markokajkut/administracija_troskova:latest
-  # #   image: administracija
-  # #   restart: always
-  # #   container_name: app
-  # #   build:
-  # #     context: .
-  # #   ports:
-  # #     - "8501:8501"
-  # #   depends_on:
-  # #     db:
-  # #       condition: service_healthy
-  # #   healthcheck:
-  # #     test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
-  # #     interval: 10s
-  # #     timeout: 10s
-  # #     retries: 5
-  # #     start_period: 20s
+  app:
+    #image: markokajkut/administracija_troskova:latest
+    image: administracija
+    restart: always
+    container_name: app
+    build:
+      context: .
+    ports:
+      - "8501:8501"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
     # labels:
     #   - ofelia.job-exec.enable=true
     #   - ofelia.job-exec.backend.schedule=@every 60s 
