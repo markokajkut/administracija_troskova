@@ -102,13 +102,13 @@ def generate_report(pocetni_datum, krajnji_datum, administracija_engine):
                                          if not df_gorivo.empty else "Nema podataka",
         }
 
-        env = Environment(loader=FileSystemLoader(f'{parent_dir}/templates'))
-        template = env.get_template(f'{parent_dir}/templates/report_template.html')
+        env = Environment(loader=FileSystemLoader(f'{current_dir}/templates'))
+        template = env.get_template('report_template.html')
 
         # Render the template with data
         rendered_html = template.render(template_data)
 
-        html_filename = f'{parent_dir}/templates/Izvještaj_{pocetni_datum_format}-{krajnji_datum_format}.html'
+        html_filename = f'{current_dir}/templates/Izvještaj_{pocetni_datum_format}-{krajnji_datum_format}.html'
         # Save the report to a file (or send it as an email, etc.)
         with open(html_filename, 'w', encoding='utf-8') as report_file:
             report_file.write(rendered_html)
@@ -119,7 +119,7 @@ def generate_report(pocetni_datum, krajnji_datum, administracija_engine):
             "encoding": "UTF-8"
         }
         # Create a PDF from the rendered HTML
-        pdfkit.from_file(html_filename, f'{parent_dir}/reports/{pdf_filename}', configuration=config, options=options, verbose=True)
+        pdfkit.from_file(html_filename, pdf_filename, configuration=config, options=options, verbose=True)
         # pdfkit.from_file(html_filename, pdf_filename, configuration=config, options=options, verbose=True)
 
         # Check if the file exists before attempting to delete
@@ -133,7 +133,7 @@ def generate_report(pocetni_datum, krajnji_datum, administracija_engine):
 def delete_pdf_after_download(pdf_filename):
 
     # Check if the file exists before attempting to delete
-    if os.path.exists(f'{parent_dir}/reports/{pdf_filename}'):
-        os.remove(f'{parent_dir}/reports/{pdf_filename}')
+    if os.path.exists(pdf_filename):
+        os.remove(pdf_filename)
     else:
         pass

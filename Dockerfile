@@ -10,8 +10,10 @@ RUN DEBIAN_FRONTEND=noninteractive && apt-get update --fix-missing && apt-get in
     software-properties-common \
     git \
     pkg-config \
-    default-libmysqlclient-dev \
+    #default-libmysqlclient-dev \
     wkhtmltopdf \
+    #libmariadb3 \
+    libmariadb-dev \
     && rm -rf /var/lib/apt/lists/*
     #pkg-config
     #xvfb \
@@ -22,15 +24,12 @@ RUN DEBIAN_FRONTEND=noninteractive && apt-get update --fix-missing && apt-get in
 #RUN apt-get update && apt-get install -y dos2unix
 # RUN git clone https://github.com/markokajkut/administracija_troskova.git
 
-#COPY requirements.txt _Pregled_podataka.py .env app_skelet_unos.py config.yaml entrypoint.sh report_template.html report.py unos_u_bazu.py weather.py send_report_to_mail.py ./
 RUN mkdir ./app
 RUN mkdir ./reports
 RUN mkdir ./provision
-RUN mkdir ./templates
 
 COPY app ./app/
 COPY provision ./provision/
-COPY templates ./templates/
 COPY requirements.txt ./
 COPY .env ./app/
 COPY config.yaml ./

@@ -16,7 +16,7 @@ parent_dir = os.path.dirname(current_dir)
 def img():
     _, _, _, _, _, _, _, _, _, col10 = st.columns(10)
     with col10:
-        st.image(f"{parent_dir}/templates/logo.jpg")
+        st.image(f"{parent_dir}/app/templates/logo.jpg")
 
 # Ciscenje st.session_state varijabli
 def clear_cache():
@@ -91,13 +91,12 @@ def report_form():
                             st.session_state.report_generated_status = True
                             st.success('Izvještaj generisan!')
                 except Exception as e:
-                    st.error(f"Greška pri generisanju. Pokušajte ponovo. {e}")
+                   st.error(f"Greška pri generisanju. Pokušajte ponovo. {e}")
         if st.session_state.report_generated_status == True:
-                    with open(f"{parent_dir}/reports/{pdf_filename}", "rb") as file:
-                        dwnld_btn = st.download_button(label="Preuzmite izvještaj",
+                    with open(pdf_filename, "rb") as file:
+                        st.download_button(label="Preuzmite izvještaj",
                                                        data=file,
-                                                       file_name=pdf_filename,
+                                                       file_name=pdf_filename.split("/")[-1],
                                                        on_click=on_click_download
                                                        )
-                    if dwnld_btn:
                         delete_pdf_after_download(pdf_filename)

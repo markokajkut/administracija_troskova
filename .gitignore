@@ -2,8 +2,3 @@ __pycache__
 app/__pycache__
 data
 myproject
-myproject_ubuntu
-my.cnf
-test.ipynb
-.env
-app/.env

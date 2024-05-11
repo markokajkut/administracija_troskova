@@ -1,12 +1,12 @@
-version: '3'
+#version: '3'
 volumes:
   data:
   #my.cnf:
 services:
   db:
-    image: mariadb
+    image: mariadb:11.3
     restart: always
-    container_name: my_db
+    container_name: db
     env_file:
       - ./.env
     environment:
@@ -15,16 +15,17 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ./data:/var/lib/mysql
-      - ./provision_db:/docker-entrypoint-initdb.d
+      - "data:/var/lib/mysql"
+      - "./provision_db:/docker-entrypoint-initdb.d"
     ports:
-      - "3310:${DB_PORT}"
+      - "3306:${DB_PORT}"
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 20s
+    #entrypoint: ./provision_db/01-databases.sql
     #command: bash "echo 'bind-address=0.0.0.0' >> /etc/mysql/mariadb.conf.d/50-server.cnf"
     # networks:
     #   - mynet

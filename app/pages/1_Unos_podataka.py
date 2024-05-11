@@ -185,8 +185,12 @@ def main():
         df = call_data_editor(vrsta_troska, df_usluga, df_gorivo, df_troskovi_odrzavanja, df_terenski_troskovi)
         submitted = st.button("Potvrda", help="Potvrdite unos podataka u bazu")
         if submitted:
-            unos_u_bazu_administracija(vrsta_troska, administracija_engine, df)
-            unos_u_bazu_unos(unos_engine, df, vrsta_troska)
+            try:
+                unos_u_bazu_administracija(vrsta_troska, administracija_engine, df)
+                unos_u_bazu_unos(unos_engine, df, vrsta_troska)
+            except:
+                st.error("Greška prilikom unosa podataka u bazu. Provjerite unešene vrijednosti.")
+            
     # Upozorenja za "Usluga" data editor, radi pravilnog unosenja u bazu
     if vrsta_troska == "Usluga":
         with st.sidebar:

@@ -66,7 +66,8 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df):
                                 "iznos_ziralno": float(0), 
                                 "placeno": row["Naplaćeno?"],
                                 "op_trosak": row["Operativni trošak"],
-                                "cijena_po_km": row["Iznos"]/(row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"]),
+                                "cijena_po_km": row["Iznos"]/(row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"]) \
+                                                if (row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"]) > 0 else float(0),
                                 "neto_zarada": row["Neto zarada"]}
                     try:
                         administracija_connection.execute(text(query), parameters=row_dict)
@@ -131,7 +132,8 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df):
                                 "iznos_ziralno": row["Iznos"], 
                                 "placeno": row["Naplaćeno?"],
                                 "op_trosak": row["Operativni trošak"],
-                                "cijena_po_km": row["Iznos"]/(row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"]),
+                                "cijena_po_km": row["Iznos"]/(row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"]) \
+                                                if (row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"]) > 0 else float(0),
                                 "neto_zarada": row["Neto zarada"]}
                     try:
                         administracija_connection.execute(text(query), parameters=row_dict)
@@ -196,7 +198,8 @@ def unos_u_bazu_administracija(vrsta_troska, administracija_engine, df):
                                 "iznos_ziralno": float(0),
                                 "placeno": row["Naplaćeno?"],
                                 "op_trosak": row["Operativni trošak"],
-                                "cijena_po_km": row["Iznos"]/(row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"]),
+                                "cijena_po_km": row["Iznos"]/(row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"]) \
+                                                if (row["Kilometraža na satu KRAJ"] - row["Kilometraža na satu START"]) > 0 else float(0),
                                 "neto_zarada": row["Neto zarada"]}
                     try:
                         administracija_connection.execute(text(query), parameters=row_dict)
